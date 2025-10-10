@@ -4,12 +4,12 @@ module hash_dp
 (
 	input clk,
 	input rst,
+	input [127:0] parallel_in_m,
+
 	input inz_counter_i,
 	input en_counter_i,
 	input start_rnd,
-	input [127:0] m_input,
 	input load_m,
-	input [127:0] parallel_in_m,
 	
 	input load_a,
 	input load_b,
@@ -32,6 +32,7 @@ module hash_dp
 
 	output co_counter_i,
 	output done_rnd,
+	output [127:0] out
 );
 
 	wire [5:0] out_counter_i;
@@ -165,6 +166,6 @@ module hash_dp
 	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   
 
 
-
+	assign out = {out_a, out_b, out_c, out_d};
 	
 endmodule
