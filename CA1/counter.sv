@@ -5,13 +5,15 @@ module counter
 (
 	input clk,
 	input rst,
+	intput inz,
 	input en,
-	output logic [WIDTH-1:0] count,
 	output logic cout
 );
-
+	logic [WIDTH-1:0] count;
 	always @(posedge clk, posedge rst) begin
 		if (!rst) begin
+			count <= 0;
+		end else if (inz) begin
 			count <= 0;
 		end else if (en) begin
 			count <= count + 1;
