@@ -6,7 +6,7 @@ module hash_top_tb;
     reg start;
     reg [127:0] parallel_in_m;
     wire done;
-    wire out;
+    wire [127:0] out;
     
     hash_top dut (
         .clk(clk),
@@ -30,16 +30,16 @@ module hash_top_tb;
         rst = 0;
         #20;
         
-        parallel_in_m = 128'h6865_6C6C_6F5F_776F_726C_645F_7465_7374;
+        parallel_in_m = 128'h41a801a8e81df62b14a661b85c97bf45;
         $display("Input data: %32h", parallel_in_m);
         
         start = 1;
         #10;
         start = 0;
 
-        #100;
+        #100000;
         
-        $finish;
+        $stop;
     end
     
 endmodule

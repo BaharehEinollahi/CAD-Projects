@@ -51,7 +51,7 @@ module hash_ct(
 	always@(*) begin
 		case(ps)
 			IDLE: begin
-				if(start_rnd) begin
+				if(start) begin
 					ns = A;
 				end else begin
 					ns = IDLE;

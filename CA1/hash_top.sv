@@ -6,7 +6,7 @@ module hash_top(
     input start,
     input [127:0] parallel_in_m,
     output done,
-    output out
+    output [127:0] out
 );
 
     wire co_counter_i;

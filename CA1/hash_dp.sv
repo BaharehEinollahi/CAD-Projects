@@ -46,7 +46,7 @@ module hash_dp
 		.out(out_counter_i)
 	);
 	wire [1:0] rnd_out;
-	rnd_generator_top(
+	rnd_generator_top rnd_generator_top(
 		.clk(clk),
 	    .rst(rst),
 	    .start_rnd(start_rnd),
@@ -71,8 +71,8 @@ module hash_dp
 
 	assign a0 = 32'h67452301;
 	assign b0 = 32'hefcdab89;
-	assign a0 = 32'h98badcfe;
-	assign a0 = 32'h10325476;
+	assign c0 = 32'h98badcfe;
+	assign d0 = 32'h10325476;
 
 	wire [31:0] barrel_shifter_out;
 
@@ -91,28 +91,28 @@ module hash_dp
 	register #(32) reg_b (
 		.clk(clk),
 		.rst(rst),
-		.load(load_a),
-		.parallel_in(parallel_in_a),
-		.data_out(out_a)
+		.load(load_b),
+		.parallel_in(parallel_in_b),
+		.data_out(out_b)
 	);
 
 	register #(32) reg_c (
 		.clk(clk),
 		.rst(rst),
-		.load(load_a),
-		.parallel_in(parallel_in_a),
-		.data_out(out_a)
+		.load(load_c),
+		.parallel_in(parallel_in_c),
+		.data_out(out_c)
 	);
 
 	register #(32) reg_d (
 		.clk(clk),
 		.rst(rst),
-		.load(load_a),
-		.parallel_in(parallel_in_a),
-		.data_out(out_a)
+		.load(load_d),
+		.parallel_in(parallel_in_d),
+		.data_out(out_d)
 	);
 
-	wire [31:0] input_f1, input_f2;
+	wire [31:0] input_f1, input_f2, parallel_in_f;
 	wire [31:0] out_f;
 	assign input_f1 =  (out_counter_i[5:4] == 2'b00) ? ((out_b & out_c) | ((~out_b) & out_d)) :
 							(out_counter_i[5:4] == 2'b01) ? ((out_d & out_b) | ((~out_d) & out_c)) :
