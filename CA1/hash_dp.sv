@@ -74,10 +74,10 @@ module hash_dp
 	assign a0 = 0x10325476;
 
 
-	assign parallel_in_a = (sel_a1) ? a0 : out_d;
-	assign parallel_in_b = (sel_b1) ? b0 : out_d!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!;
-	assign parallel_in_c = (sel_c1) ? c0 : out_b;
-	assign parallel_in_d = (sel_d1) ? d0 : out_c;
+	assign parallel_in_a = (sel_a1) ? a0 : (sel_a2) out_d : 0;
+	assign parallel_in_b = (sel_b1) ? b0 : (sel_b2) outb + barrel_shifter_out : 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!;
+	assign parallel_in_c = (sel_c1) ? c0 : (sel_c2) out_b : 0;
+	assign parallel_in_d = (sel_d1) ? d0 : (sel_d2) out_c : 0;
 	register reg_a #(32)(
 		.clk(clk),
 		.rst(rst),
@@ -141,7 +141,29 @@ module hash_dp
                           (rnd_out == 2'b11) ? m[127:96] :
                           32'b0;
 	
-	
+	wire [4:0] step_i_;
+	rotate rotate(
+		._i_(out_counter_i),
+    	.step_i_(step_i_)
+	)
+
+	wire [31:0] constant_rom_out;
+	constant_rom constant_rom(
+		.addr(out_counter_i),
+		.data(constant_rom_out)
+	)
+
+
+	wire [31:0] barrel_shifter_out;
+	barrel_shifter barrel_shifter (
+		.value(out_f),
+		.shift_amount(step_i_),
+		.out(barrel_shifter_out)
+	)
+
+	assign input_f2 = (constant_rom_out + out_f) + (m_rnd_ + out_a);
+	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   
+
 
 
 	
