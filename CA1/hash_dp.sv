@@ -36,7 +36,7 @@ module hash_dp
 );
 
 	wire [5:0] out_counter_i;
-	counter counter_i #(6)(
+	counter #(.WIDTH(6)) counter_i (
 		.clk(clk),
 		.rst(rst),
 		.inz(inz_counter_i),
@@ -69,17 +69,18 @@ module hash_dp
 	wire [31:0] c0;
 	wire [31:0] d0;
 
-	assign a0 = 0x67452301;
-	assign b0 = 0xefcdab89;
-	assign a0 = 0x98badcfe;
-	assign a0 = 0x10325476;
+	assign a0 = 32'h67452301;
+	assign b0 = 32'hefcdab89;
+	assign a0 = 32'h98badcfe;
+	assign a0 = 32'h10325476;
 
+	wire [31:0] barrel_shifter_out;
 
-	assign parallel_in_a = (sel_a1) ? a0 : (sel_a2) out_d : 0;
-	assign parallel_in_b = (sel_b1) ? b0 : (sel_b2) outb + barrel_shifter_out : 0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!;
-	assign parallel_in_c = (sel_c1) ? c0 : (sel_c2) out_b : 0;
-	assign parallel_in_d = (sel_d1) ? d0 : (sel_d2) out_c : 0;
-	register reg_a #(32)(
+	assign parallel_in_a = (sel_a1) ? a0 : (sel_a2)? out_d : 0;
+	assign parallel_in_b = (sel_b1) ? b0 : (sel_b2)? out_b + barrel_shifter_out : 0;
+	assign parallel_in_c = (sel_c1) ? c0 : (sel_c2)? out_b : 0;
+	assign parallel_in_d = (sel_d1) ? d0 : (sel_d2)? out_c : 0;
+	register #(32) reg_a (
 		.clk(clk),
 		.rst(rst),
 		.load(load_a),
@@ -87,7 +88,7 @@ module hash_dp
 		.data_out(out_a)
 	);
 
-	register reg_b #(32)(
+	register #(32) reg_b (
 		.clk(clk),
 		.rst(rst),
 		.load(load_a),
@@ -95,7 +96,7 @@ module hash_dp
 		.data_out(out_a)
 	);
 
-	register reg_c #(32)(
+	register #(32) reg_c (
 		.clk(clk),
 		.rst(rst),
 		.load(load_a),
@@ -103,7 +104,7 @@ module hash_dp
 		.data_out(out_a)
 	);
 
-	register reg_d #(32)(
+	register #(32) reg_d (
 		.clk(clk),
 		.rst(rst),
 		.load(load_a),
@@ -118,7 +119,7 @@ module hash_dp
 							(out_counter_i[5:4] == 2'b10) ? (out_b ^ out_c ^ out_d ) :
 							                                (out_c ^ (out_b | (~out_d)));
 
-	register reg_f #(32)(
+	register #(32) reg_f (
 		.clk(clk),
 		.rst(rst),
 		.load(load_f),
@@ -127,7 +128,7 @@ module hash_dp
 	);
 
 	wire [127:0] out_m;
-	register reg_m #(128)(
+	register #(128) reg_m (
 		.clk(clk),
 		.rst(rst),
 		.load(load_m),
@@ -136,31 +137,31 @@ module hash_dp
 	);
 
 	wire [31:0] m_rnd_;
-	assign m_rnd_ =       (rnd_out == 2'b00) ? m[31:0]   :
-                          (rnd_out == 2'b01) ? m[63:32]  :
-                          (rnd_out == 2'b10) ? m[95:64]  :
-                          (rnd_out == 2'b11) ? m[127:96] :
+	assign m_rnd_ =       (rnd_out == 2'b00) ? out_m[31:0]   :
+                          (rnd_out == 2'b01) ? out_m[63:32]  :
+                          (rnd_out == 2'b10) ? out_m[95:64]  :
+                          (rnd_out == 2'b11) ? out_m[127:96] :
                           32'b0;
 	
 	wire [4:0] step_i_;
 	rotate rotate(
 		._i_(out_counter_i),
     	.step_i_(step_i_)
-	)
+	);
 
 	wire [31:0] constant_rom_out;
 	constant_rom constant_rom(
 		.addr(out_counter_i),
 		.data(constant_rom_out)
-	)
+	);
 
 
-	wire [31:0] barrel_shifter_out;
+	
 	barrel_shifter barrel_shifter (
 		.value(out_f),
 		.shift_amount(step_i_),
 		.out(barrel_shifter_out)
-	)
+	);
 
 	assign input_f2 = (constant_rom_out + out_f) + (m_rnd_ + out_a);
 	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   

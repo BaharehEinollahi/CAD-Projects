@@ -65,7 +65,7 @@ module hash_top(
 	.sel_f1(sel_f1),
 	.sel_f2(sel_f2),
 
-    output logic done
+    .done(done)
     );
 
     

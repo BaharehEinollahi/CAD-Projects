@@ -156,4 +156,4 @@ module hash_ct(
 		endcase
 	end
 
-end
+endmodule

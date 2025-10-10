@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
 
 module register
-#parameter(WIDTH = 6)
+#(parameter WIDTH = 6)
 (
 	input clk,
 	input rst,

@@ -11,7 +11,6 @@ module counter
 	output logic cout,
 	output logic [WIDTH-1:0] out
 );
-	logic [WIDTH-1:0] out;
 	always @(posedge clk, posedge rst) begin
 		if (rst) begin
 			out <= 0;
