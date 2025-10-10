@@ -37,7 +37,7 @@ module hash_top_tb;
         #10;
         start = 0;
 
-        #100000;
+        #8000;
         
         $stop;
     end

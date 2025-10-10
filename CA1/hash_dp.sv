@@ -36,7 +36,7 @@ module hash_dp
 );
 
 	wire [5:0] out_counter_i;
-	counter #(.WIDTH(6)) counter_i (
+	counter2 #(.WIDTH(6)) counter_i (
 		.clk(clk),
 		.rst(rst),
 		.inz(inz_counter_i),
