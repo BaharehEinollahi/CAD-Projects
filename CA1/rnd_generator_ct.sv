@@ -17,11 +17,13 @@ module rnd_generator_ct
 		.rst(rst),
 		.inz(inz_counter),
 		.en(en_counter),
+		.inz_value(3'b010),
 		.cout(co_counter)
 	);
 	
-	enum {IDLE, A, B, C} ps, ns;
-	always(posedge clk, posedge rst) begin
+	typedef enum logic [1:0] {IDLE, A, B, C} state_t;
+    state_t ps, ns;
+	always@(posedge clk, posedge rst) begin
 		if(rst) begin
 			ps <= IDLE;
 		end else begin
@@ -29,7 +31,7 @@ module rnd_generator_ct
 		end
 	end
 	
-	always(*) begin
+	always@(*) begin
 		case(ps)
 			IDLE: begin
 				if(start_rnd) begin
@@ -51,16 +53,17 @@ module rnd_generator_ct
 		endcase
 	end
 	
-	always(*) begin
+	always@(*) begin
 		load_shreg = 0;
 		shift_shreg = 0;
 		inz_counter = 0;
 		en_counter = 0;
 		done_rnd = 0;
 		case(ps)
-			IDLE:
+			IDLE:begin
+			end
 			A: begin
-				load = 1;
+				load_shreg = 1;
 				inz_counter = 1;
 			end
 			B: begin

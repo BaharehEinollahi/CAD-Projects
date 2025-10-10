@@ -12,19 +12,20 @@ module rnd_generator_top
 );
 
 	wire shift_shreg;
-	wire load;
+	wire load_shreg;
 	rnd_generator_ct ct(
 		.clk(clk),
 		.rst(rst),
 		.start_rnd(start_rnd),
 		.shift_shreg(shift_shreg),
+		.load_shreg(load_shreg),
 		.done_rnd(done_rnd)
 	);
 	
 	rnd_generator_dp dp(
 		.clk(clk),
 		.rst(rst),
-		.load(load),
+		.load(load_shreg),
 		.shift(shift_shreg),
 		.parallel_in(parallel_in),
 		.rnd_out(rnd_out)

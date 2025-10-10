@@ -12,10 +12,10 @@ module shift_register
 );
 
 	always @(posedge clk, posedge rst) begin
-		if (!rst) begin
-			data_out <= 2'b00;
+		if (rst) begin
+			data_out <= 0;
 		end else if (load) begin
-			data_out <= data_in;
+			data_out <= parallel_in;
 		end else if (shift) begin
 			data_out <= {data_out[4:0], input_bit};
 		end

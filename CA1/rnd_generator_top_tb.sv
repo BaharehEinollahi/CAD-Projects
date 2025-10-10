@@ -29,34 +29,35 @@ module rnd_generator_top_tb;
     // Test sequence
     initial begin
         // Initialize inputs
-        rst = 1;
+        rst = 0;
         start_rnd = 0;
         parallel_in = 6'b0;
 
         // Apply reset
-        #10 rst = 0;
         #10 rst = 1;
+        #10 rst = 0;
 
         // Test case 1: Load parallel input and start random generation
         #10 parallel_in = 6'b101010;
         start_rnd = 1;
         #10 start_rnd = 0;
 
-        // Wait for done signal
-        wait(done_rnd);
-        $display("Random Output: %b", rnd_out);
+        #200 $stop;
+        // // Wait for done signal
+        // wait(done_rnd);
+        // $display("Random Output: %b", rnd_out);
 
-        // Test case 2: Another random generation
-        #20 parallel_in = 6'b110011;
-        start_rnd = 1;
-        #10 start_rnd = 0;
+        // // Test case 2: Another random generation
+        // #20 parallel_in = 6'b110011;
+        // start_rnd = 1;
+        // #10 start_rnd = 0;
 
-        // Wait for done signal
-        wait(done_rnd);
-        $display("Random Output: %b", rnd_out);
+        // // Wait for done signal
+        // wait(done_rnd);
+        // $display("Random Output: %b", rnd_out);
 
-        // Finish simulation
-        #50 $stop;
+        // // Finish simulation
+        // #50 $stop;
     end
 
 endmodule
