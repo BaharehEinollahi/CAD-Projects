@@ -16,6 +16,26 @@ module hash_top(
     wire en_counter_i;
     wire start_rnd;
     wire load_m;
+
+    wire load_a;
+    wire load_b;
+    wire load_c;
+    wire load_d;
+
+    wire sel_a1;
+    wire sel_b1;
+    wire sel_c1;
+    wire sel_d1;
+
+    wire sel_a2;
+    wire sel_b2;
+    wire sel_c2;
+    wire sel_d2;
+
+    wire load_f;
+    wire sel_f1;
+    wire sel_f2;
+
     hash_ct hash_ct(
     .clk(clk),
     .rst(rst),
@@ -29,61 +49,52 @@ module hash_top(
 	.start_rnd(start_rnd),
 	.load_m(load_m),
 	
-	output logic load_a,
-	output logic load_b,
-	output logic load_c,
-	output logic load_d,
-
-	output logic sel_a1,
-	output logic sel_b1,
-	output logic sel_c1,
-	output logic sel_d1,
-	
-	output logic sel_a2,
-	output logic sel_b2,
-	output logic sel_c2,
-	output logic sel_d2,
-
-	output logic load_f,
-	output logic sel_f1,
-	output logic sel_f2,
+	.load_a(load_a),
+	.load_b(load_b),
+	.load_c(load_c),
+	.load_d(load_d),
+	.sel_a1(sel_a1),
+	.sel_b1(sel_b1),
+	.sel_c1(sel_c1),
+	.sel_d1(sel_d1),
+	.sel_a2(sel_a2),
+	.sel_b2(sel_b2),
+	.sel_c2(sel_c2),
+	.sel_d2(sel_d2),
+	.load_f(load_f),
+	.sel_f1(sel_f1),
+	.sel_f2(sel_f2),
 
     output logic done
     );
 
     
  hash_dp hash_dp(
-	input clk,
-	input rst,
-	input [127:0] parallel_in_m,
-	
-	input inz_counter_i,
-	input en_counter_i,
-	input start_rnd,
-	input load_m,
-	
-	input load_a,
-	input load_b,
-	input load_c,
-	input load_d,
-
-	input sel_a1,
-	input sel_b1,
-	input sel_c1,
-	input sel_d1,
-	
-	input sel_a2,
-	input sel_b2,
-	input sel_c2,
-	input sel_d2,
-
-	input load_f,
-	input sel_f1,
-	input sel_f2,
-
-	output co_counter_i,
-	output done_rnd,
-    output out
+	.clk(clk),
+	.rst(rst),
+	.parallel_in_m(parallel_in_m),
+	.inz_counter_i(inz_counter_i),
+	.en_counter_i(en_counter_i),
+	.start_rnd(start_rnd),
+	.load_m(load_m),
+	.load_a(load_a),
+	.load_b(load_b),
+	.load_c(load_c),
+	.load_d(load_d),
+	.sel_a1(sel_a1),
+	.sel_b1(sel_b1),
+	.sel_c1(sel_c1),
+	.sel_d1(sel_d1),
+	.sel_a2(sel_a2),
+	.sel_b2(sel_b2),
+	.sel_c2(sel_c2),
+	.sel_d2(sel_d2),
+	.load_f(load_f),
+	.sel_f1(sel_f1),
+	.sel_f2(sel_f2),
+	.co_counter_i(co_counter_i),
+	.done_rnd(done_rnd),
+    .out(out)
     );
 
 
