@@ -137,10 +137,10 @@ module hash_dp
 	);
 
 	wire [31:0] m_rnd_;
-	assign m_rnd_ =       (rnd_out == 2'b00) ? out_m[31:0]   :
-                          (rnd_out == 2'b01) ? out_m[63:32]  :
-                          (rnd_out == 2'b10) ? out_m[95:64]  :
-                          (rnd_out == 2'b11) ? out_m[127:96] :
+	assign m_rnd_ =       (rnd_out == 2'b11) ? out_m[31:0]   :
+                          (rnd_out == 2'b10) ? out_m[63:32]  :
+                          (rnd_out == 2'b01) ? out_m[95:64]  :
+                          (rnd_out == 2'b00) ? out_m[127:96] :
                           32'b0;
 	
 	wire [4:0] step_i_;

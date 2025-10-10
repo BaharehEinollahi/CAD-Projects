@@ -21,6 +21,6 @@ module counter
 		end
 	end
 
-	assign cout = (out == 4'b111) ? 1'b1 : 1'b0;
+	assign cout = out == ({WIDTH{1'b1}});
 
 endmodule
