@@ -1,0 +1,111 @@
+m255
+K4
+z2
+!s11f vlog 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/intelFPGA/20.1
+vpe
+Z0 DXx6 sv_std 3 std 0 22 VYECXdT12H8WgbUP_5Y6:3
+Z1 !s110 1761593687
+!i10b 1
+!s100 4VATj<XRg<d=HCO8lNLon1
+Z2 !s11b Dg1SIo80bB@j0V0VzS_@n1
+I?R7Tgi2N=5JkYl5EAFIEF3
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+S1
+Z4 dD:/Ray_Universe/CAD/CA2
+w1761586503
+8D:/Ray_Universe/CAD/CA2/pe.sv
+FD:/Ray_Universe/CAD/CA2/pe.sv
+!i122 36
+L0 3 11
+Z5 OV;L;2020.1;71
+r1
+!s85 0
+31
+Z6 !s108 1761593687.000000
+!s107 D:/Ray_Universe/CAD/CA2/pe.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/Ray_Universe/CAD/CA2/pe.sv|
+!i113 1
+Z7 o-work work -sv
+Z8 tCvgOpt 0
+vregister
+R0
+R1
+!i10b 1
+!s100 7e[?c75dLD^1XjMIUNl221
+R2
+IM=JGFb@7>En@dgIQ0Q4gc0
+R3
+S1
+R4
+w1761591643
+8D:/Ray_Universe/CAD/CA2/register.sv
+FD:/Ray_Universe/CAD/CA2/register.sv
+!i122 37
+L0 4 16
+R5
+r1
+!s85 0
+31
+R6
+!s107 D:/Ray_Universe/CAD/CA2/register.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/Ray_Universe/CAD/CA2/register.sv|
+!i113 1
+R7
+R8
+vstripes_pe
+R0
+R1
+!i10b 1
+!s100 =k3PbTe]C5[_nk]hM4h7I3
+R2
+IzfC@C?;ZKRIf5EMK9R[=e3
+R3
+S1
+R4
+w1761593683
+8D:/Ray_Universe/CAD/CA2/stripes_pe.sv
+FD:/Ray_Universe/CAD/CA2/stripes_pe.sv
+!i122 38
+L0 4 55
+R5
+r1
+!s85 0
+31
+R6
+!s107 D:/Ray_Universe/CAD/CA2/stripes_pe.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/Ray_Universe/CAD/CA2/stripes_pe.sv|
+!i113 1
+R7
+R8
+vstripes_pe_tb
+R0
+R1
+!i10b 1
+!s100 X5Yj[lR?;`XWN99AiDO4Y2
+R2
+ID80MM;Pci2FVT8CIz]`Cl2
+R3
+S1
+R4
+w1761593549
+8D:/Ray_Universe/CAD/CA2/stripes_pe_tb.sv
+FD:/Ray_Universe/CAD/CA2/stripes_pe_tb.sv
+!i122 39
+L0 3 92
+R5
+r1
+!s85 0
+31
+R6
+!s107 D:/Ray_Universe/CAD/CA2/stripes_pe_tb.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|D:/Ray_Universe/CAD/CA2/stripes_pe_tb.sv|
+!i113 1
+R7
+R8
