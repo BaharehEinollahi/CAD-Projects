@@ -41,9 +41,15 @@ module stripes_pe(
         pe_out0
     );
 
-    wire [33:0]input_sum_reg;
-    assign input_sum_reg = {18'b0, pe_out0} + {18'b0, pe_out1} + {18'b0, pe_out2} + {18'b0, pe_out3} 
-        + (is_msb? out << 1'b0 : 34'b0) + (is_lsb? init_sum : 0);
+    wire [33:0]input_sum_reg, mux_out;
+    assign mux_out = (is_msb?  34'b0 : (out << 1));
+    assign input_sum_reg = { {18{pe_out0[15]}}, pe_out0 } + 
+                           { {18{pe_out1[15]}}, pe_out1 } + 
+                           { {18{pe_out2[15]}}, pe_out2 } + 
+                           { {18{pe_out3[15]}}, pe_out3 } + 
+                           mux_out + 
+                           (is_lsb ? init_sum : 0);
+
     register sum_reg(
         .clk(clk),
         .rst(rst),

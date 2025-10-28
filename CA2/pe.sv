@@ -8,6 +8,6 @@ module pe(
 );
 	wire [15:0]out_mux;
 	assign out_mux = serial_a ? b: 16'b0;	
-	assign out = is_msb ? out_mux : out_mux;
+	assign out = is_msb ? -out_mux : out_mux;
 	
 endmodule
