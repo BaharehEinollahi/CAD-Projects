@@ -8,3 +8,5 @@ CA1/work/*
 *.vcd
 *.mti
 *.mpf
+
+/work/*

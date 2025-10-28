@@ -9,6 +9,7 @@ module multiplier_dp(
 );
 
     wire [33:0] r_data;
+
     wire [127:0] row_i_out;
     shift_register row_i_shreg(
         .clk(clk),
@@ -17,6 +18,8 @@ module multiplier_dp(
         .shift(row_i_shift),
         .out(row_i_out)
     );
+
+    
 
     
 
