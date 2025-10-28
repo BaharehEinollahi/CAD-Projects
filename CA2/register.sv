@@ -1,16 +1,19 @@
 `timescale 1ns/1ns
 
 
-module register(
-    input clk,
-    input rst,
-    input [33:0] in,
-    input en,
-    output reg [33:0] out
+module register #(
+    parameter WIDTH = 34 
+)(
+    input  logic              clk,
+    input  logic              rst,
+    input  logic [WIDTH-1:0]  in,
+    input  logic              en,
+    output logic [WIDTH-1:0] out
 );
-    always @(posedge clk, posedge rst) begin
+
+    always_ff @(posedge clk, posedge rst) begin
         if (rst) begin
-            out <= 34'b0;
+            out <= '0; 
         end else if (en) begin
             out <= in;
         end
