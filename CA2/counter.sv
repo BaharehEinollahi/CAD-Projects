@@ -7,7 +7,8 @@ module counter #(
     input rst,
     input en,
     input inz,
-    output reg [WIDTH-1:0] count
+    output reg [WIDTH-1:0] count,
+    output co
 );
     always @(posedge clk or posedge rst) begin
         if (rst)
@@ -17,4 +18,6 @@ module counter #(
         else if (en)
             count <= count + 1'b1;
     end
+
+    assign co = count == ({WIDTH{1'b1}});
 endmodule

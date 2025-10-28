@@ -1,9 +1,9 @@
 `timescale 1ns/1ns
 
-module multiplier_dp(
+module matrix_multiplier_dp(
     input clk,
     input rst,
-    //counters
+    //counters-in
     input en_row_counter,
     input inz_row_counter,
     input en_pe_counter,
@@ -25,7 +25,10 @@ module multiplier_dp(
     input b_address,
     input out_address,
 
-
+    //counters out
+    output co_row_counter,
+    output co_pe_counter,
+    output co_counter_k,
 
     output reg [33:0] out
 );
@@ -43,7 +46,8 @@ module multiplier_dp(
         .rst(rst),
         .en(en_row_counter),
         .inz(inz_row_counter),
-        .count(row_counter_out)
+        .count(row_counter_out),
+        .co(co_row_counter)
     );
 
     counter #(
@@ -53,7 +57,8 @@ module multiplier_dp(
         .rst(rst),
         .en(en_pe_counter),
         .inz(inz_pe_counter),
-        .count(pe_counter_out)
+        .count(pe_counter_out),
+        .co(co_pe_counter)
     );
 
     counter #(
@@ -63,7 +68,8 @@ module multiplier_dp(
         .rst(rst),
         .en(en_counter_k),
         .inz(inz_counter_k),
-        .count(counter_k_out)
+        .count(counter_k_out),
+        .co(co_counter_k)
     );
 
     shift_register row_i_shreg(
