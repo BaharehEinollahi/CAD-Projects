@@ -1,94 +1,72 @@
 `timescale 1ns/1ns
 
 module stripes_pe_tb;
-    // Testbench signals
     reg clk;
     reg rst;
     reg [3:0] i_vec_a_bits;
     reg [63:0] b;
+    reg [33:0] init_sum;
     reg is_msb;
+    reg is_lsb;
     reg valid;
     wire [33:0] out;
 
-    // Instantiate the DUT
+    reg [15:0] a[0:3];
+    reg [15:0] b_array[0:3];
+    int i;
+
+
     stripes_pe dut (
         .clk(clk),
         .rst(rst),
         .i_vec_a_bits(i_vec_a_bits),
         .b(b),
+        .init_sum(init_sum),
         .is_msb(is_msb),
+        .is_lsb(is_lsb),
         .valid(valid),
         .out(out)
     );
 
-    // Clock generation
     initial begin
         clk = 0;
         forever #5 clk = ~clk;
     end
 
-    // Test stimulus
     initial begin
-        // Initialize waveform dumping
-        $dumpfile("stripes_pe_tb.vcd");
-        $dumpvars(0, stripes_pe_tb);
+    init_sum = 0;
+    rst = 1;
+    i_vec_a_bits = 0;
+    b = 0;
+    is_msb = 0;
+    is_lsb = 0;
+    valid = 0;
 
-        // Initialize inputs
-        rst = 1;
-        i_vec_a_bits = 0;
-        b = 0;
-        is_msb = 0;
-        valid = 0;
+    #10;
+    rst = 0;
+    a[0] = 16'd1;
+    a[1] = 16'd3;
+    a[2] = 16'd6;
+    a[3] = 16'd2;
 
-        // Wait for 100 ns and release reset
-        #10;
-        rst = 0;
-        
-        // Test Case 1: Simple multiplication
-        // Testing with a = 4'b0001 and b = 64'h0000_0000_0000_0001
+    b_array[0] = 16'd3;
+    b_array[1] = 16'd5;
+    b_array[2] = 16'd5;
+    b_array[3] = 16'd1;
+
+    b = {b_array[0], b_array[1], b_array[2], b_array[3]};
+    
+    for (i = 15; i >= 0; i--) begin
         @(posedge clk);
-        i_vec_a_bits = 4'b0001;
-        b = 64'b0001000000100000_0001000100111000_001000100001001_0010000010010010;
-        is_msb = 0;
+        i_vec_a_bits = {a[0][i], a[1][i], a[2][i], a[3][i]};
+        is_msb = (i == 15);
+        is_lsb = (i == 0);
         valid = 1;
         #10;
-
-        // Test Case 2: MSB multiplication
-        @(posedge clk);
-        i_vec_a_bits = 4'b1111;
-        b = 64'b0001000000100000_0001000100111000_001000100001001_0010000010010010;
-        is_msb = 1;
-        valid = 1;
-        #10;
-
-        // Test Case 3: Zero input
-        @(posedge clk);
-        i_vec_a_bits = 4'b0000;
-        b = 64'b0001000000100000_0001000100111000_001000100001001_0010000010010010;
-        is_msb = 0;
-        valid = 1;
-        #10;
-
-        // Test Case 4: All ones with valid low
-        @(posedge clk);
-        i_vec_a_bits = 4'b1111;
-        b = 64'b0001000000100000_0001000100111000_001000100001001_0010000010010010;
-        is_msb = 1;
-        valid = 0;
-        #10;
-
-        // Add more test cases here as needed
-
-        // End simulation
-        #100;
     end
 
-    // Monitor changes
-    always @(posedge clk) begin
-        if (!rst) begin
-            $display("Time=%0t i_vec_a_bits=%b b=%h is_msb=%b valid=%b out=%h",
-                    $time, i_vec_a_bits, b, is_msb, valid, out);
-        end
-    end
+    #100;
+    $stop;
+end
 
 endmodule

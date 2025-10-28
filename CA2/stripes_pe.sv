@@ -6,7 +6,9 @@ module stripes_pe(
     input rst,
     input [3:0]i_vec_a_bits,
     input [63:0]b,
+    input [33:0]init_sum,
     input is_msb,
+    input is_lsb,
     input valid,
     output [33:0]out
 );
@@ -40,7 +42,8 @@ module stripes_pe(
     );
 
     wire [33:0]input_sum_reg;
-    assign input_sum_reg = {2'b0, pe_out0} + {2'b0, pe_out1} + {2'b0, pe_out2} + {2'b0, pe_out3} + (is_msb? out << 1'b0 : 34'b0);
+    assign input_sum_reg = {18'b0, pe_out0} + {18'b0, pe_out1} + {18'b0, pe_out2} + {18'b0, pe_out3} 
+        + (is_msb? out << 1'b0 : 34'b0) + (is_lsb? init_sum : 0);
     register sum_reg(
         .clk(clk),
         .rst(rst),
