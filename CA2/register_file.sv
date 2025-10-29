@@ -1,31 +1,36 @@
 `timescale 1ns/1ns
 
-module register_file(
+module register_file #(
+    parameter ADDR_WIDTH = 3,
+    parameter DATA_WIDTH = 16,
+    parameter N_REGS = 8,
+    parameter SEL_WIDTH = $clog2(DATA_WIDTH)
+)(
     input clk,
     input rst,
     input load_rf,
-    input [2:0] address,
-    input [15:0] data_in,
-    input [3:0] select,
-    output [7:0] data_out
+    input [ADDR_WIDTH-1:0] address,
+    input [DATA_WIDTH-1:0] data_in,
+    input [SEL_WIDTH-1:0] select,
+    output [N_REGS-1:0] data_out
 );
 
-    wire [7:0] en_regs;
+    wire [N_REGS-1:0] en_regs;
     decoder #(
-        .IN_WIDTH(3)
+        .IN_WIDTH(ADDR_WIDTH)
     ) addr_decoder (
         .in(address),
         .en(load_rf),
         .out(en_regs)
     );
 
-    wire [15:0] reg_outs [0:7];
+    wire [DATA_WIDTH-1:0] reg_outs [0:N_REGS-1];
     genvar i;
     generate
-        for (i = 0; i < 8; i++) begin : reg_array
+        for (i = 0; i < N_REGS; i++) begin : reg_array
             register #(
-                .WIDTH(16)
-                ) reg_inst (
+                .WIDTH(DATA_WIDTH)
+            ) reg_inst (
                 .clk(clk),
                 .rst(rst),
                 .in(data_in),
@@ -35,16 +40,15 @@ module register_file(
         end
     endgenerate
 
-
-   assign data_out = {
-    reg_outs[0][15 - select],
-    reg_outs[1][15 - select],
-    reg_outs[2][15 - select],
-    reg_outs[3][15 - select],
-    reg_outs[4][15 - select],
-    reg_outs[5][15 - select],
-    reg_outs[6][15 - select],
-    reg_outs[7][15 - select]
+    assign data_out = {
+        reg_outs[0][DATA_WIDTH-1 - select],
+        reg_outs[1][DATA_WIDTH-1 - select],
+        reg_outs[2][DATA_WIDTH-1 - select],
+        reg_outs[3][DATA_WIDTH-1 - select],
+        reg_outs[4][DATA_WIDTH-1 - select],
+        reg_outs[5][DATA_WIDTH-1 - select],
+        reg_outs[6][DATA_WIDTH-1 - select],
+        reg_outs[7][DATA_WIDTH-1 - select]
     };
 
 endmodule

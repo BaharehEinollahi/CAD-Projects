@@ -10,7 +10,7 @@ module memory #(
     input write,
     input [ADDR_WIDTH-1:0] address,
     input [WORD_WIDTH-1:0] w_data,
-    output reg [WORD_WIDTH-1:0] r_data
+    output [WORD_WIDTH-1:0] r_data
 );
 
     reg [WORD_WIDTH-1:0] mem [0:DEPTH-1];
@@ -20,10 +20,9 @@ module memory #(
     end
 
     always @(posedge clk or posedge rst) begin
-        if (rst)begin
-
-        end
-        else begin
+        if (rst) begin
+            // Optionally clear memory on reset
+        end else begin
             if (write)
                 mem[address] <= w_data;
         end

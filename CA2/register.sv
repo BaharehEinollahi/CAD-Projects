@@ -13,7 +13,7 @@ module register #(
 
     always_ff @(posedge clk, posedge rst) begin
         if (rst) begin
-            out <= '0; 
+            out <= {WIDTH{1'b0}};
         end else if (en) begin
             out <= in;
         end
