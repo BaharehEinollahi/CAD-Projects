@@ -45,15 +45,26 @@ module stripes_pe_tb;
     #10;
     rst = 0;
 
-    a[0] = 16'd1;
-    a[1] = -16'sd4;
-    a[2] = 16'd6;
-    a[3] = 16'd3;
+    a[0] = -16'sd100;
+    a[1] = -16'sd100;
+    a[2] = -16'sd100;
+    a[3] = -16'sd100;
 
-    b_array[0] = 16'd2;
-    b_array[1] = 16'd6;
-    b_array[2] = -16'sd1;
-    b_array[3] = 16'd7;
+    b_array[0] =  16'sd1;
+    b_array[1] =  16'sd2;
+    b_array[2] =  16'sd3;
+    b_array[3] =  16'sd4;
+
+
+    // a[0] = 16'd1;
+    // a[1] = -16'sd4;
+    // a[2] = 16'd6;
+    // a[3] = 16'd3;
+
+    // b_array[0] = 16'd2;
+    // b_array[1] = 16'd6;
+    // b_array[2] = -16'sd1;
+    // b_array[3] = 16'd7;
 
     
     b = {b_array[0], b_array[1], b_array[2], b_array[3]};

@@ -5,33 +5,34 @@ module matrix_multiplier_cntrl(
     input rst,
     //start signal
     input start,
-    //done signal
-    input done,
+    
 
     //counters in
     input co_row_counter,
     input co_pe_counter,
     input co_counter_k,
     //counters
-    output en_row_counter,
-    output inz_row_counter,
-    output en_pe_counter,
-    output inz_pe_counter,
-    output en_counter_k,
-    output inz_counter_k,
+    output reg en_row_counter,
+    output reg inz_row_counter,
+    output reg en_pe_counter,
+    output reg inz_pe_counter,
+    output reg en_counter_k,
+    output reg inz_counter_k,
     //shift register
-    output row_i_shift,
+    output reg row_i_shift,
     //register file
-    output load_rf,
+    output reg load_rf,
     //pes
-    output is_msb,
-    output is_lsb,
-    output is_valid,
+    // output reg is_msb,
+    output reg is_lsb,
+    output reg is_valid,
     //memory 
-    output write,
-    output a_address,
-    output b_address,
-    output out_address
+    output reg write,
+    output reg a_address,
+    output reg b_address,
+    output reg out_address,
+
+    output reg done
 );
 
     typedef enum logic [2:0] {IDLE, WAIT, LOADA, ROWBEGIN, LOADROW, PE, WRTIEMEM, DONE} state_t;
@@ -67,11 +68,12 @@ module matrix_multiplier_cntrl(
                 end else begin
                     ns = LOADA;
                 end
+            end
             ROWBEGIN: begin
                 if(co_row_counter) begin
-                    ns = LOADROW;
-                end else begin
                     ns = DONE;
+                end else begin
+                    ns = LOADROW;
                 end
             end
             LOADROW: begin
@@ -94,6 +96,7 @@ module matrix_multiplier_cntrl(
             DONE: begin
                 ns = IDLE;
             end 
+            default: ns = IDLE;
 			
 		endcase
 	end
@@ -107,14 +110,14 @@ module matrix_multiplier_cntrl(
         inz_pe_counter = 0;
         en_counter_k = 0;
         inz_counter_k = 0;
-        is_msb = 0;
+        // is_msb = 0;
         is_lsb = 0;
         is_valid = 0;
         write = 0;
         a_address = 0;
         b_address = 0;
         out_address = 0;
-        done_rnd = 0;
+        done = 0;
 		case(ps)
 			WAIT: begin
                 inz_counter_k = 1;
@@ -123,6 +126,7 @@ module matrix_multiplier_cntrl(
             LOADA: begin
                 a_address = 1;
                 load_rf = 1;
+                en_counter_k = 1;
             end
             ROWBEGIN: begin
                 en_row_counter = 1;
@@ -133,9 +137,10 @@ module matrix_multiplier_cntrl(
             LOADROW: begin
                 row_i_shift = 1;
                 b_address = 1;
+                en_counter_k = 1;
                 if(co_counter_k) begin
                     is_valid = 1;
-                    is_msb = 1;
+                    // is_msb = 1;
                 end
             end
             PE: begin

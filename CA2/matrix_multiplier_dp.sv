@@ -16,7 +16,7 @@ module matrix_multiplier_dp(
     //register file
     input load_rf,
     //pes
-    input is_msb,
+    // input is_msb,
     input is_lsb,
     input is_valid,
     //memory 
@@ -75,24 +75,29 @@ module matrix_multiplier_dp(
     shift_register row_i_shreg(
         .clk(clk),
         .rst(rst),
-        .in(r_data),
+        .in(r_data[15:0]),
         .shift(row_i_shift),
         .out(row_i_out)
     );
 
+    wire [7:0] rf_out;
     register_file rf(
         .clk(clk),
         .rst(rst),
         .load_rf(load_rf),
-        .address(3'b0),
-        .data_in(16'b0),
-        .data_out()
+        .address(counter_k_out),
+        .data_in(r_data[15:0]),
+        .select(pe_counter_out),
+        .data_out(rf_out)
     );
+
+    wire is_msb;
+    assign is_msb = is_valid & (pe_counter_out == 0);
     wire [33:0] pe_out1, pe_out0;
     stripes_pe stripes_pe1(
         .clk(clk),
         .rst(rst),
-        .i_vec_a_bits(row_i_out[7:4]),
+        .i_vec_a_bits(rf_out[7:4]),
         .b(row_i_out[127:64]),
         .init_sum(34'b0),
         .is_msb(is_msb),
@@ -104,7 +109,7 @@ module matrix_multiplier_dp(
     stripes_pe stripes_pe0(
         .clk(clk),
         .rst(rst),
-        .i_vec_a_bits(row_i_out[3:0]),
+        .i_vec_a_bits(rf_out[3:0]),
         .b(row_i_out[63:0]),
         .init_sum(34'b0),
         .is_msb(is_msb),
@@ -119,7 +124,7 @@ module matrix_multiplier_dp(
     wire [6:0] mem_address;
     assign mem_address = a_address      ? counter_k_out :
                          b_address      ? (row_counter_out * 8 + counter_k_out) :
-                         out_address    ? (64 + 8 + counter_k_out) :
+                         out_address    ? (64 + 8 + row_counter_out) :
                                           0;
     memory #(
         .WORD_WIDTH(34),
@@ -129,7 +134,7 @@ module matrix_multiplier_dp(
         .clk(clk),
         .rst(rst),
         .write(write),
-        .address(out_address),
+        .address(mem_address),
         .w_data(w_data),
         .r_data(r_data)
     );

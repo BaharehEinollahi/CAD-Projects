@@ -23,28 +23,28 @@ module register_file(
     genvar i;
     generate
         for (i = 0; i < 8; i++) begin : reg_array
-            reg_module #(
+            register #(
                 .WIDTH(16)
                 ) reg_inst (
                 .clk(clk),
                 .rst(rst),
-                .data_in(data_in),
+                .in(data_in),
                 .en(en_regs[i]),
-                .data_out(reg_outs[i])
+                .out(reg_outs[i])
             );
         end
     endgenerate
 
 
    assign data_out = {
-    reg_outs[0][select],
-    reg_outs[1][select],
-    reg_outs[2][select],
-    reg_outs[3][select],
-    reg_outs[4][select],
-    reg_outs[5][select],
-    reg_outs[6][select],
-    reg_outs[7][select]
+    reg_outs[0][15 - select],
+    reg_outs[1][15 - select],
+    reg_outs[2][15 - select],
+    reg_outs[3][15 - select],
+    reg_outs[4][15 - select],
+    reg_outs[5][15 - select],
+    reg_outs[6][15 - select],
+    reg_outs[7][15 - select]
     };
 
 endmodule

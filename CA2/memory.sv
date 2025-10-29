@@ -3,7 +3,7 @@
 module memory #(
     parameter WORD_WIDTH = 34,
     parameter DEPTH = 128,
-    parameter ADDR_WIDTH = 7,
+    parameter ADDR_WIDTH = 7
 )(
     input clk,
     input rst,
@@ -20,13 +20,17 @@ module memory #(
     end
 
     always @(posedge clk or posedge rst) begin
-        if (rst)
-            r_data <= {WORD_WIDTH{1'b0}};
+        if (rst)begin
+
+        end
         else begin
             if (write)
                 mem[address] <= w_data;
-            r_data <= mem[address];
         end
     end
+
+    assign r_data = mem[address];
+
+
 
 endmodule

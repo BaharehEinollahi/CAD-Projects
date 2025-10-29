@@ -8,7 +8,7 @@ module shift_register(
 );
     always @(posedge clk, posedge rst) begin
         if (rst) begin
-            out <= 34'b0;
+            out <= 128'b0;
         end else if (shift) begin
             out <= {out[111:0], in};
         end

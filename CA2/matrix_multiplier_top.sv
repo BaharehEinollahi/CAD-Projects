@@ -40,7 +40,7 @@ module matrix_multiplier_top(
         .load_rf(load_rf),
 
         // PEs
-        .is_msb(is_msb),
+        // .is_msb(is_msb),
         .is_lsb(is_lsb),
         .is_valid(is_valid),
 
@@ -65,7 +65,6 @@ module matrix_multiplier_top(
         .rst(rst),
 
         .start(start),
-        .done(done),
 
         // Counter carry inputs
         .co_row_counter(co_row_counter),
@@ -87,7 +86,7 @@ module matrix_multiplier_top(
         .load_rf(load_rf),
 
         // PEs
-        .is_msb(is_msb),
+        // .is_msb(is_msb),
         .is_lsb(is_lsb),
         .is_valid(is_valid),
 
@@ -95,7 +94,8 @@ module matrix_multiplier_top(
         .write(write),
         .a_address(a_address),
         .b_address(b_address),
-        .out_address(out_address)
+        .out_address(out_address),
+        .done(done)
     );
 
 endmodule
