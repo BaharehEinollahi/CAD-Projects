@@ -16,7 +16,7 @@ module memory #(
     reg [WORD_WIDTH-1:0] mem [0:DEPTH-1];
 
     initial begin
-        $readmemh("CAD-CA2/TestCases/input_memory (1).txt", mem);
+        $readmemh("CAD-CA2/TestCases/input_memory (3).txt", mem);
     end
 
     always @(posedge clk or posedge rst) begin

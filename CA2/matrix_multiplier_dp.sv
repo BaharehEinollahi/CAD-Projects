@@ -3,7 +3,7 @@
 module matrix_multiplier_dp(
     input clk,
     input rst,
-    //counters-in
+
     input en_row_counter,
     input inz_row_counter,
     input en_pe_counter,
@@ -11,21 +11,18 @@ module matrix_multiplier_dp(
     input en_counter_k,
     input inz_counter_k,
 
-    //shift register
     input row_i_shift,
-    //register file
+
     input load_rf,
-    //pes
-    // input is_msb,
+    
     input is_lsb,
     input is_valid,
-    //memory 
+
     input write,
     input a_address,
     input b_address,
     input out_address,
 
-    //counters out
     output co_row_counter,
     output co_pe_counter,
     output co_counter_k,

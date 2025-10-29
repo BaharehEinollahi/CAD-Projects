@@ -29,7 +29,7 @@ module matrix_multiplier_top_tb;
         start = 0;
 
         wait(done);
-        #10;
+        #300;
 
         $stop(0);
     end

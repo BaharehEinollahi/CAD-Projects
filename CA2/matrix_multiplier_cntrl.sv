@@ -3,30 +3,27 @@
 module matrix_multiplier_cntrl(
     input clk,
     input rst,
-    //start signal
     input start,
     
 
-    //counters in
     input co_row_counter,
     input co_pe_counter,
     input co_counter_k,
-    //counters
+
     output reg en_row_counter,
     output reg inz_row_counter,
     output reg en_pe_counter,
     output reg inz_pe_counter,
     output reg en_counter_k,
     output reg inz_counter_k,
-    //shift register
+
     output reg row_i_shift,
-    //register file
+
     output reg load_rf,
-    //pes
-    // output reg is_msb,
+    
     output reg is_lsb,
     output reg is_valid,
-    //memory 
+
     output reg write,
     output reg a_address,
     output reg b_address,

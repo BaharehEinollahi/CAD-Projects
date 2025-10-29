@@ -25,7 +25,6 @@ module matrix_multiplier_top(
         .clk(clk),
         .rst(rst),
 
-        // Counters
         .en_row_counter(en_row_counter),
         .inz_row_counter(inz_row_counter),
         .en_pe_counter(en_pe_counter),
@@ -33,29 +32,23 @@ module matrix_multiplier_top(
         .en_counter_k(en_counter_k),
         .inz_counter_k(inz_counter_k),
 
-        // Shift register
         .row_i_shift(row_i_shift),
 
-        // Register file
         .load_rf(load_rf),
 
-        // PEs
-        // .is_msb(is_msb),
+        
         .is_lsb(is_lsb),
         .is_valid(is_valid),
 
-        // Memory
         .write(write),
         .a_address(a_address),
         .b_address(b_address),
         .out_address(out_address),
 
-        // Counter outputs
         .co_row_counter(co_row_counter),
         .co_pe_counter(co_pe_counter),
         .co_counter_k(co_counter_k),
 
-        // Final output
         .out(out_dp)
     );
 
@@ -66,12 +59,10 @@ module matrix_multiplier_top(
 
         .start(start),
 
-        // Counter carry inputs
         .co_row_counter(co_row_counter),
         .co_pe_counter(co_pe_counter),
         .co_counter_k(co_counter_k),
 
-        // Counter control outputs
         .en_row_counter(en_row_counter),
         .inz_row_counter(inz_row_counter),
         .en_pe_counter(en_pe_counter),
@@ -79,18 +70,15 @@ module matrix_multiplier_top(
         .en_counter_k(en_counter_k),
         .inz_counter_k(inz_counter_k),
 
-        // Shift register
         .row_i_shift(row_i_shift),
 
-        // Register file
         .load_rf(load_rf),
 
-        // PEs
-        // .is_msb(is_msb),
+        
         .is_lsb(is_lsb),
         .is_valid(is_valid),
 
-        // Memory
+        
         .write(write),
         .a_address(a_address),
         .b_address(b_address),
