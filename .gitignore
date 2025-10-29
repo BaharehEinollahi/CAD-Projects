@@ -12,3 +12,4 @@ CA2/work/*
 *.mpf
 *.qdb
 CA2/work/_vmake
+*.do

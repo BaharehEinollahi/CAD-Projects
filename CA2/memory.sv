@@ -10,19 +10,20 @@ module memory #(
     input write,
     input [ADDR_WIDTH-1:0] address,
     input [WORD_WIDTH-1:0] w_data,
-    output [WORD_WIDTH-1:0] r_data
+    output reg [WORD_WIDTH-1:0] r_data
 );
 
     reg [WORD_WIDTH-1:0] mem [0:DEPTH-1];
 
     initial begin
-        $readmemh("CAD-CA2/TestCases/input_memory (3).txt", mem);
+        $readmemh("CAD-CA2/TestCases/input_memory (1).txt", mem);
     end
 
     always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            // Optionally clear memory on reset
-        end else begin
+        if (rst)begin
+
+        end
+        else begin
             if (write)
                 mem[address] <= w_data;
         end
