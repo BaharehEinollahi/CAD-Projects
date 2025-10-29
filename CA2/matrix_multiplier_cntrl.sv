@@ -129,7 +129,7 @@ module matrix_multiplier_cntrl(
                 en_counter_k = 1;
             end
             ROWBEGIN: begin
-                en_row_counter = 1;
+                // en_row_counter = 1;
                 if(co_row_counter) begin
                     inz_counter_k = 1;
                 end
@@ -153,6 +153,7 @@ module matrix_multiplier_cntrl(
             WRTIEMEM: begin
                 out_address = 1;
                 write = 1;
+                 en_row_counter = 1;
             end
             DONE: begin
                 done = 1;

@@ -47,7 +47,7 @@ module matrix_multiplier_dp(
         .en(en_row_counter),
         .inz(inz_row_counter),
         .count(row_counter_out),
-        .co(co_row_counter)
+        .co2(co_row_counter)
     );
 
     counter #(
@@ -123,7 +123,7 @@ module matrix_multiplier_dp(
 
     wire [6:0] mem_address;
     assign mem_address = a_address      ? counter_k_out :
-                         b_address      ? (row_counter_out * 8 + counter_k_out) :
+                         b_address      ? (row_counter_out * 8 + counter_k_out + 8) :
                          out_address    ? (64 + 8 + row_counter_out) :
                                           0;
     memory #(

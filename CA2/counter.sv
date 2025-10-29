@@ -8,15 +8,20 @@ module counter #(
     input en,
     input inz,
     output reg [WIDTH-1:0] count,
-    output co
+    output co,
+    output logic co2
 );
     always @(posedge clk or posedge rst) begin
-        if (rst)
+        if (rst)begin
             count <= {WIDTH{1'b0}};
-        else if (inz)
+            co2 <= 1'b0;
+        end
+        else if (inz) begin
             count <= {WIDTH{1'b0}};
+            co2 <= 1'b0;
+        end
         else if (en)
-            count <= count + 1'b1;
+            {co2, count} <= count + 1'b1;
     end
 
     assign co = count == ({WIDTH{1'b1}});
