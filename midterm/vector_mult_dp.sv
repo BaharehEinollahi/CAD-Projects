@@ -28,6 +28,8 @@ mult_top mult0(
 	rst,
 	a0,
 	w0,
+	en_a0,
+	en_w0,
 	ctrl_a0_in,
 	done0,
 	mult0_out
@@ -38,6 +40,8 @@ mult_top mult1(
 	rst,
 	a1,
 	w1,
+	en_a1,
+	en_w1,
 	ctrl_a1_in,
 	done1,
 	mult1_out
@@ -49,7 +53,7 @@ assign sum_res = result + mult0_out + mult1_out;
 register #(16) acc(
 	clk,
 	rst,
-	1,
+	1'b1,
 	sum_res,
 	result
 );

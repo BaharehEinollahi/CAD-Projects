@@ -19,9 +19,6 @@ module vector_mult_ctrl(
 
     state_t ps, ns;
 	
-	always @(posedge clk, posedge rst) begin
-		
-	end
     always @(posedge clk or posedge rst) begin
         if (rst)
             ps <= IDLE;
@@ -33,12 +30,12 @@ module vector_mult_ctrl(
         case (ps)
             IDLE: begin
                 if (start)
-                    ns = INIT;
+                    ns = INZ;
 				else
 					ns = IDLE;
             end
 
-            INIT: begin
+            INZ: begin
                 ns = PROCESS;
             end
 
@@ -60,7 +57,7 @@ module vector_mult_ctrl(
         ctrl_a0_in = 0;
         ctrl_a1_in = 0;
         inz_acc = 0;
-        done = 0;
+        ready = 0;
 	
 		en_a0 = 0; 
 		en_w0 = 0;
@@ -71,7 +68,7 @@ module vector_mult_ctrl(
             IDLE: begin
             end
 
-            INIT: begin
+            INZ: begin
                 inz_acc = 1;
 				en_a0 = 1; 
 				en_w0 = 1;
