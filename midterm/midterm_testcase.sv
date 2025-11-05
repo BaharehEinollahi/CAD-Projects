@@ -28,6 +28,7 @@ module midterm_testcase;
         input [7:0] ta0, tw0, ta1, tw1;
         input [15:0] expected;
         begin
+            #10
             rst = 1;
             #20 rst = 0;
             #10;
