@@ -8,7 +8,7 @@ module constant_rom (
     logic [31:0] rom [0:63];
     
     initial begin
-        $readmemh("constant.mem", rom);
+        $readmemh("../proj_desc/k.mem", rom);
     end
     
     assign data = rom[addr];
