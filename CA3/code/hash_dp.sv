@@ -75,11 +75,14 @@ module hash_dp
 	assign d0 = 8'h76;
 
 	wire [7:0] multiplier_out;
+	parallel_in_mux parallel_in_mux1(.sel_1(sel_a1), .a(a0), .sel_2(sel_a2), .b(out_d), .otherwise(8'b0), .out(parallel_in_a));
+	parallel_in_mux parallel_in_mux2(.sel_1(sel_b1), .a(b0), .sel_2(sel_b2), .b(out_b + multiplier_out), .otherwise(8'b0), .out(parallel_in_b));
+	parallel_in_mux parallel_in_mux3(.sel_1(sel_c1), .a(c0), .sel_2(sel_c2), .b(out_b), .otherwise(8'b0), .out(parallel_in_c));
+	parallel_in_mux parallel_in_mux4(.sel_1(sel_d1), .a(d0), .sel_2(sel_d2), .b(out_c), .otherwise(8'b0), .out(parallel_in_d));
 
-	assign parallel_in_a = (sel_a1) ? a0 : (sel_a2)? out_d : 0;
-	assign parallel_in_b = (sel_b1) ? b0 : (sel_b2)? out_b + multiplier_out : 0;
-	assign parallel_in_c = (sel_c1) ? c0 : (sel_c2)? out_b : 0;
-	assign parallel_in_d = (sel_d1) ? d0 : (sel_d2)? out_c : 0;
+	// assign parallel_in_b = (sel_b1) ? b0 : (sel_b2)? out_b + multiplier_out : 0;
+	// assign parallel_in_c = (sel_c1) ? c0 : (sel_c2)? out_b : 0;
+	// assign parallel_in_d = (sel_d1) ? d0 : (sel_d2)? out_c : 0;
 	register #(8) reg_a (
 		.clk(clk),
 		.rst(rst),
