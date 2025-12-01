@@ -2,158 +2,130 @@
 
 module hash_ct(
     input clk,
-    input rst,
-    input start,
+     rst, 
+     start,
+    input co_counter_i, 
+    done_rnd,
 
-    input co_counter_i,
-	input done_rnd,
-
-    output logic inz_counter_i,
-	output logic en_counter_i,
-	output logic start_rnd,
-	output logic load_m,
-	
-	output logic load_a,
-	output logic load_b,
-	output logic load_c,
-	output logic load_d,
-
-	output logic sel_a1,
-	output logic sel_b1,
-	output logic sel_c1,
-	output logic sel_d1,
-	
-	output logic sel_a2,
-	output logic sel_b2,
-	output logic sel_c2,
-	output logic sel_d2,
-
-	output logic load_f,
-	output logic sel_f1,
-	output logic sel_f2,
-
-    output logic done
+    output inz_counter_i, 
+    en_counter_i, 
+    start_rnd, 
+    load_m,
+    output load_a,
+    load_b, 
+    load_c, 
+    load_d,
+    output 
+    sel_a1, 
+    sel_b1, 
+    sel_c1, 
+    sel_d1,
+    output sel_a2, 
+    sel_b2, 
+    sel_c2, 
+    sel_d2,
+    output load_f, 
+    sel_f1, 
+    sel_f2, 
+    done
 );
 
+    wire q2, q1, q0;
+    wire q2_n, q1_n, q0_n;
+    wire next_q2, next_q1, next_q0; 
+
+    logic_dff ff0 (.clk(clk), .rst(rst), .d(next_q0), .out(q0));
+    logic_dff ff1 (.clk(clk), .rst(rst), .d(next_q1), .out(q1));
+    logic_dff ff2 (.clk(clk), .rst(rst), .d(next_q2), .out(q2));
+
+    logic_not not0 (.a(q0), .out(q0_n));
+    logic_not not1 (.a(q1), .out(q1_n));
+    logic_not not2 (.a(q2), .out(q2_n));
+
+    wire is_IDLE, is_A, is_B, is_C, is_D, is_E, is_F, is_G;
+
+    logic_and3 dec_idle (.a(q2_n), .b(q1_n), .c(q0_n), .out(is_IDLE));
+    logic_and3 dec_A    (.a(q2_n), .b(q1_n), .c(q0)  , .out(is_A));
+    logic_and3 dec_B    (.a(q2_n), .b(q1)  , .c(q0_n), .out(is_B));
+    logic_and3 dec_C    (.a(q2_n), .b(q1)  , .c(q0)  , .out(is_C));
+    logic_and3 dec_D    (.a(q2)  , .b(q1_n), .c(q0_n), .out(is_D));
+    logic_and3 dec_E    (.a(q2)  , .b(q1_n), .c(q0)  , .out(is_E));
+    logic_and3 dec_F    (.a(q2)  , .b(q1)  , .c(q0_n), .out(is_F));
+    logic_and3 dec_G    (.a(q2)  , .b(q1)  , .c(q0)  , .out(is_G));
+
+    
+    
+    wire to_A, to_B, to_C, to_D, to_E, to_F, to_G;
+    wire co_counter_n, done_rnd_n;
+    
+    logic_not not_co (.a(co_counter_i), .out(co_counter_n));
+    logic_not not_dn (.a(done_rnd), .out(done_rnd_n));
+
+    logic_and2 tr_idle_a (.a(is_IDLE), .b(start), .out(to_A));
+
+    logic_or2  tr_to_B   (.a(is_A), .b(is_F), .out(to_B));
+
+    logic_and2 tr_b_g    (.a(is_B), .b(co_counter_i), .out(to_G));
+    logic_and2 tr_b_c    (.a(is_B), .b(co_counter_n), .out(to_C));
+
+    wire d_stay;
+    logic_and2 tr_d_stay (.a(is_D), .b(done_rnd_n), .out(d_stay));
+    logic_or2  tr_to_D   (.a(is_C), .b(d_stay), .out(to_D));
+
+    logic_and2 tr_d_e    (.a(is_D), .b(done_rnd), .out(to_E));
+
+    assign to_F = is_E; 
 
 
-    typedef enum logic [2:0] {IDLE, A, B, C, D, E, F, G} state_t;
-    state_t ps, ns;
 
-	always@(posedge clk, posedge rst) begin
-		if(rst) begin
-			ps <= IDLE;
-		end else begin
-			ps <= ns;
-		end
-	end
-	
-	always@(*) begin
-		case(ps)
-			IDLE: begin
-				if(start) begin
-					ns = A;
-				end else begin
-					ns = IDLE;
-				end
-			end
-			A: ns = B;
-			B: begin
-				if(co_counter_i) begin
-					ns = G;
-				end else begin
-					ns = C;
-				end
-			end
-            C: ns = D;
-			D:begin
-                if(done_rnd) begin
-                    ns = E;
-                end else begin
-                    ns = D;
-                end
-            end
-            E: ns = F;
-            F: ns = B;
-            G: ns = IDLE;
-			default: ns = IDLE;
-		endcase
-	end
-	
-	always@(*) begin
-		inz_counter_i = 0;
-        en_counter_i  = 0;
-        start_rnd     = 0;
-        load_m        = 0;
+    wire nq0_ac, nq0_eg;
+    logic_or2 or_q0_1 (.a(to_A), .b(to_C), .out(nq0_ac));
+    logic_or2 or_q0_2 (.a(to_E), .b(to_G), .out(nq0_eg));
+    logic_or2 or_q0_f (.a(nq0_ac), .b(nq0_eg), .out(next_q0));
 
-        load_a = 0;
-        load_b = 0;
-        load_c = 0;
-        load_d = 0;
+    wire nq1_bc, nq1_fg;
+    logic_or2 or_q1_1 (.a(to_B), .b(to_C), .out(nq1_bc));
+    logic_or2 or_q1_2 (.a(to_F), .b(to_G), .out(nq1_fg));
+    logic_or2 or_q1_f (.a(nq1_bc), .b(nq1_fg), .out(next_q1));
 
-        sel_a1 = 0;
-        sel_b1 = 0;
-        sel_c1 = 0;
-        sel_d1 = 0;
-        
-        sel_a2 = 0;
-        sel_b2 = 0;
-        sel_c2 = 0;
-        sel_d2 = 0;
+    wire nq2_de, nq2_fg;
+    logic_or2 or_q2_1 (.a(to_D), .b(to_E), .out(nq2_de));
+    logic_or2 or_q2_2 (.a(to_F), .b(to_G), .out(nq2_fg));
+    logic_or2 or_q2_f (.a(nq2_de), .b(nq2_fg), .out(next_q2));
 
-        load_f = 0;
-        sel_f1 = 0;
-        sel_f2 = 0;
+    
+    
+    assign inz_counter_i = is_A;
+    
+    assign en_counter_i = is_F;
 
-        done = 0;
-		case(ps)
-			IDLE:begin
-			end
-			A: begin
-				inz_counter_i = 1;
-                load_m        = 1;
-                load_a        = 1;
-                load_b        = 1;
-                load_c        = 1;
-                load_d        = 1;
+    assign start_rnd = is_C;
 
-                sel_a1        = 1;
-                sel_b1        = 1;
-                sel_c1        = 1;
-                sel_d1        = 1;
+    wire grp_af;
+    logic_or2 or_grp_af (.a(is_A), .b(is_F), .out(grp_af));
+    
+    assign load_m = grp_af;
+    assign load_a = grp_af;
+    assign load_b = grp_af;
+    assign load_c = grp_af;
+    assign load_d = grp_af;
 
-			end
-			B:begin end
-			C: begin
-				sel_f1        = 1;
-                load_f        = 1;
-                start_rnd     = 1;
-			end
-            D: begin end
-            E: begin
-                load_f        = 1;
-                sel_f2        = 1;
-            end
-            F: begin
-                load_m        = 1;
-                load_a        = 1;
-                load_b        = 1;
-                load_c        = 1;
-                load_d        = 1;
+    assign sel_a1 = is_A;
+    assign sel_b1 = is_A;
+    assign sel_c1 = is_A;
+    assign sel_d1 = is_A;
 
-                sel_a2        = 1;
-                sel_b2        = 1;
-                sel_c2        = 1;
-                sel_d2        = 1;
+    assign sel_a2 = is_F;
+    assign sel_b2 = is_F;
+    assign sel_c2 = is_F;
+    assign sel_d2 = is_F;
 
-                en_counter_i  = 1;
-            end
-            G: begin
-                done          = 1;
-            end
-			default: begin
-			end
-		endcase
-	end
+    logic_or2 or_load_f (.a(is_C), .b(is_E), .out(load_f));
+
+    assign sel_f1 = is_C;
+
+    assign sel_f2 = is_E;
+
+    assign done = is_G;
 
 endmodule
