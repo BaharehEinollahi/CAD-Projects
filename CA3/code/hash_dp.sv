@@ -75,14 +75,13 @@ module hash_dp
 	assign d0 = 8'h76;
 
 	wire [7:0] multiplier_out;
+	wire [7:0] sum_b_multi;
+	adder adder(out_b, multiplier_out, sum_b_multi);
 	parallel_in_mux parallel_in_mux1(.sel_1(sel_a1), .a(a0), .sel_2(sel_a2), .b(out_d), .otherwise(8'b0), .out(parallel_in_a));
-	parallel_in_mux parallel_in_mux2(.sel_1(sel_b1), .a(b0), .sel_2(sel_b2), .b(out_b + multiplier_out), .otherwise(8'b0), .out(parallel_in_b));
+	parallel_in_mux parallel_in_mux2(.sel_1(sel_b1), .a(b0), .sel_2(sel_b2), .b(sum_b_multi), .otherwise(8'b0), .out(parallel_in_b));
 	parallel_in_mux parallel_in_mux3(.sel_1(sel_c1), .a(c0), .sel_2(sel_c2), .b(out_b), .otherwise(8'b0), .out(parallel_in_c));
 	parallel_in_mux parallel_in_mux4(.sel_1(sel_d1), .a(d0), .sel_2(sel_d2), .b(out_c), .otherwise(8'b0), .out(parallel_in_d));
-
-	// assign parallel_in_b = (sel_b1) ? b0 : (sel_b2)? out_b + multiplier_out : 0;
-	// assign parallel_in_c = (sel_c1) ? c0 : (sel_c2)? out_b : 0;
-	// assign parallel_in_d = (sel_d1) ? d0 : (sel_d2)? out_c : 0;
+	
 	register #(8) reg_a (
 		.clk(clk),
 		.rst(rst),
@@ -117,10 +116,11 @@ module hash_dp
 
 	wire [7:0] input_f1, input_f2, parallel_in_f;
 	wire [7:0] out_f;
-	assign input_f1 =  (out_counter_i[5:4] == 2'b00) ? ((out_b & out_c) | ((~out_b) & out_d)) :
-							(out_counter_i[5:4] == 2'b01) ? ((out_d & out_b) | ((~out_d) & out_c)) :
-							(out_counter_i[5:4] == 2'b10) ? (out_b ^ out_c ^ out_d ) :
-							                                (out_c ^ (out_b | (~out_d)));
+	parallel_build_f1 bpf1(.a(out_a),.b(out_b),.c(out_c),.d(out_d),.sel(out_counter_i[5:4]),.out(input_f1));
+	// assign input_f1 =  (out_counter_i[5:4] == 2'b00) ? ((out_b & out_c) | ((~out_b) & out_d)) :
+	// 						(out_counter_i[5:4] == 2'b01) ? ((out_d & out_b) | ((~out_d) & out_c)) :
+	// 						(out_counter_i[5:4] == 2'b10) ? (out_b ^ out_c ^ out_d ) :
+	// 						                                (out_c ^ (out_b | (~out_d)));
 
 	register #(8) reg_f (
 		.clk(clk),
