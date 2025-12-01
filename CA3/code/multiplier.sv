@@ -1,5 +1,5 @@
 module multiplier #(
-    parameter WIDTH = 16 
+    parameter WIDTH = 8
 ) (
     input  [WIDTH-1:0] f,
     output [WIDTH-1:0] multiplier_out

@@ -4,9 +4,9 @@ module hash_top(
     input clk,
     input rst,
     input start,
-    input [127:0] parallel_in_m,
+    input [31:0] parallel_in_m,
     output done,
-    output [127:0] out
+    output [31:0] out
 );
 
     wire co_counter_i;

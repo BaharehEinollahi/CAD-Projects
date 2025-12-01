@@ -2,10 +2,10 @@
 
 module constant_rom (
     input [5:0] addr,
-    output logic [31:0] data
+    output logic [7:0] data
 );
     
-    logic [31:0] rom [0:63];
+    logic [7:0] rom [0:63];
     
     initial begin
         $readmemh("../proj_desc/k.mem", rom);

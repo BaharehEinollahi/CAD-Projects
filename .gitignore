@@ -1,7 +1,7 @@
 CA1/transcript
 CA1/work/*
 CA2/work/*
-*/work/
+**/work/
 */work/*
 */vsim.wlf
 */cad_ca1.cr.mti
@@ -14,3 +14,6 @@ CA2/work/*
 *.qdb
 CA2/work/_vmake
 *.do
+**/tmp_*
+**/transcript
+**/vsim.wlf
