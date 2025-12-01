@@ -16,7 +16,7 @@ int main() {
     DWORD waitResult = WaitForSingleObject(mutex, INFINITE);
     if (waitResult == WAIT_OBJECT_0)
     {
-        std::ifstream f("validation/numbers.txt");
+        std::ifstream f("numbers.txt");
 
     // Check if the file is successfully opened
     if (!f.is_open()) {
@@ -29,7 +29,7 @@ int main() {
     getline(f, s);
     int number = std::stoi(s);
         number+=13;
-    std::ofstream MyFile("validation/numbers.txt",std::ios::trunc);
+    std::ofstream MyFile("numbers.txt",std::ios::trunc);
     MyFile<<number;
     f.close();
     ReleaseMutex(mutex);
