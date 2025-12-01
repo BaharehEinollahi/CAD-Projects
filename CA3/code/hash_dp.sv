@@ -36,13 +36,13 @@ module hash_dp
 );
 
 	wire [5:0] out_counter_i;
-	counter2 #(.WIDTH(6)) counter_i (
+	counter #(.WIDTH(6)) counter_i (
 		.clk(clk),
 		.rst(rst),
 		.inz(inz_counter_i),
 		.en(en_counter_i),
 		.inz_value(0),
-		.cout(co_counter_i),
+		.cout2(co_counter_i),
 		.out(out_counter_i)
 	);
 	wire [1:0] rnd_out;

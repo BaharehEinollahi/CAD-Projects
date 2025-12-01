@@ -30,7 +30,7 @@ module hash_top_tb;
         rst = 0;
         #20;
         
-        parallel_in_m = 32'h df01f0b7;
+        parallel_in_m = 32'h c5178e73;
         $display("Input data: %8h", parallel_in_m);
         
         start = 1;
