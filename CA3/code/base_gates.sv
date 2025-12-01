@@ -32,6 +32,15 @@ module logic_or2 (input a, input b, output out);
     );
 endmodule
 
+module logic_xor2 (input a, input b, output out);
+
+    c2 xor_gate (
+        .D00(1'b0), .D01(1'b1), .D10(1'b1), .D11(1'b0),
+        .A1(a), .B1(1'b0),
+        .A0(b), .B0(1'b1),
+        .out(out)
+    );
+endmodule
 
 module logic_dff (input clk, input rst, input d, output out);
     s2 s2_dff (

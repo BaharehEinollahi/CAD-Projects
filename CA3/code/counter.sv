@@ -20,16 +20,9 @@ module counter
     generate
         for (i = 0; i < WIDTH; i = i + 1) begin : logic_chain
             if (i == 0) begin
-                
                 assign carry[i] = out[i];
             end else begin
-                
-                c2 and_gate (
-                    .D00(1'b0), .D01(1'b0), .D10(1'b0), .D11(1'b1),
-                    .A1(out[i]), .B1(1'b0), 
-                    .A0(carry[i-1]), .B0(1'b1),
-                    .out(carry[i])
-                );
+                logic_and2 and_gate (out[i], carry[i-1], carry[i]);
             end
         end
     endgenerate
@@ -41,19 +34,9 @@ module counter
         for (i = 0; i < WIDTH; i = i + 1) begin : sum_logic
             if (i == 0) begin
                 
-                c2 not_gate (
-                    .D00(1'b0), .D01(1'b1), .D10(1'b0), .D11(1'b0),
-                    .A1(out[i]), .B1(1'b0),
-                    .A0(1'b1), .B0(1'b1),
-                    .out(sum[i])
-                );
+                logic_not not_gate (out[i], sum[i]);
             end else begin
-                c2 xor_gate (
-                    .D00(1'b0), .D01(1'b1), .D10(1'b1), .D11(1'b0),
-                    .A1(out[i]), .B1(1'b0),
-                    .A0(carry[i-1]), .B0(1'b1),
-                    .out(sum[i])
-                );
+                logic_xor2 xor_gate (out[i], carry[i-1], sum[i]);
             end
         end
     endgenerate
