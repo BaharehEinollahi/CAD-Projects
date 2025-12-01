@@ -117,10 +117,6 @@ module hash_dp
 	wire [7:0] input_f1, input_f2, parallel_in_f;
 	wire [7:0] out_f;
 	parallel_build_f1 bpf1(.a(out_a),.b(out_b),.c(out_c),.d(out_d),.sel(out_counter_i[5:4]),.out(input_f1));
-	// assign input_f1 =  (out_counter_i[5:4] == 2'b00) ? ((out_b & out_c) | ((~out_b) & out_d)) :
-	// 						(out_counter_i[5:4] == 2'b01) ? ((out_d & out_b) | ((~out_d) & out_c)) :
-	// 						(out_counter_i[5:4] == 2'b10) ? (out_b ^ out_c ^ out_d ) :
-	// 						                                (out_c ^ (out_b | (~out_d)));
 
 	register #(8) reg_f (
 		.clk(clk),
@@ -140,13 +136,7 @@ module hash_dp
 	);
 
 	wire [7:0] m_rnd_;
-	assign m_rnd_ =       (rnd_out == 2'b11) ? out_m[7:0]   :
-                          (rnd_out == 2'b10) ? out_m[15:8]  :
-                          (rnd_out == 2'b01) ? out_m[23:16]  :
-                          (rnd_out == 2'b00) ? out_m[31:24] :
-                          32'b0;
-	
-
+	build_m_rnd bmrnd(.out_m(out_m), .rnd_out(rnd_out), .m_rnd_(m_rnd_));
 	wire [7:0] constant_rom_out;
 	constant_rom constant_rom(
 		.addr(out_counter_i),
@@ -158,10 +148,11 @@ module hash_dp
 		out_f,
 		multiplier_out
 	);
-
-	assign input_f2 = (constant_rom_out + out_f) + (m_rnd_ + out_a);
-	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   
-
+	wire [7:0] sum1, sum2;
+	adder adder2(constant_rom_out, out_f, sum1);
+	adder adder3(m_rnd_, out_a, sum2);
+	adder adder4(sum1, sum2, input_f2);
+	parallel_in_mux parallel_in_mux5(.sel_1(sel_f1), .a(input_f1), .sel_2(sel_f2), .b(input_f2), .otherwise(8'b0), .out(parallel_in_f));
 
 	assign out = {out_a, out_b, out_c, out_d};
 	
