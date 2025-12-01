@@ -2,81 +2,105 @@
 
 module rnd_generator_ct
 (
-	input clk,
-	input rst,
-	input start_rnd,
-	output logic shift_shreg,
-	output logic load_shreg,
-	output logic done_rnd
+    input clk,
+    input rst,
+    input start_rnd,
+    output wire shift_shreg,
+    output wire load_shreg,
+    output wire done_rnd
 );
-	logic inz_counter;
-	logic en_counter;
-	wire co_counter;
-	counter counter(
-		.clk(clk),
-		.rst(rst),
-		.inz(inz_counter),
-		.en(en_counter),
-		.inz_value(3'b010),
-		.cout(co_counter)
-	);
-	
-	typedef enum logic [1:0] {IDLE, A, B, C} state_t;
-    state_t ps, ns;
-	always@(posedge clk, posedge rst) begin
-		if(rst) begin
-			ps <= IDLE;
-		end else begin
-			ps <= ns;
-		end
-	end
-	
-	always@(*) begin
-		case(ps)
-			IDLE: begin
-				if(start_rnd) begin
-					ns = A;
-				end else begin
-					ns = IDLE;
-				end
-			end
-			A: ns = B;
-			B: begin
-				if(co_counter) begin
-					ns = C;
-				end else begin
-					ns = B;
-				end
-			end
-			C: ns = IDLE;
-			default: ns = IDLE;
-		endcase
-	end
-	
-	always@(*) begin
-		load_shreg = 0;
-		shift_shreg = 0;
-		inz_counter = 0;
-		en_counter = 0;
-		done_rnd = 0;
-		case(ps)
-			IDLE:begin
-			end
-			A: begin
-				load_shreg = 1;
-				inz_counter = 1;
-			end
-			B: begin
-				shift_shreg = 1;
-				en_counter = 1;
-			end
-			C: begin
-				done_rnd = 1;
-			end
-			default: begin
-			end
-		endcase
-	end
-	
-	
+
+    wire inz_counter;
+    wire en_counter;
+    wire co_counter;
+    wire q1, q0;
+    
+    //-------------------------------------------------------------------------
+    // 1. Counter Instantiation (Provided in original code)
+    //-------------------------------------------------------------------------
+    counter counter(
+        .clk(clk),
+        .rst(rst),
+        .inz(inz_counter),
+        .en(en_counter),
+        .inz_value(3'b010),
+        .cout(co_counter)
+    );
+
+    //-------------------------------------------------------------------------
+    // 2. Next State Logic & State Registers
+    //    Using module 's2' (Registered MUX)
+    //    Select Logic: S1 = q1, S0 = q0
+    //-------------------------------------------------------------------------
+    
+    // State Bit 1 (Q1)
+    // Sequence: IDLE(0)->0, A(1)->1, B(2)->1, C(3)->0
+    s2 state_reg_q1 (
+        .D00(1'b0),       // Next Q1 if IDLE
+        .D01(1'b1),       // Next Q1 if A
+        .D10(1'b1),       // Next Q1 if B
+        .D11(1'b0),       // Next Q1 if C
+        .A1(q1), .B1(1'b0), // S1 = Q1 | 0 = Q1
+        .A0(q0), .B0(1'b1), // S0 = Q0 & 1 = Q0
+        .clr(rst), 
+        .clk(clk), 
+        .out(q1)
+    );
+
+    // State Bit 0 (Q0)
+    // Sequence: IDLE(0)->start, A(1)->0, B(2)->co_counter, C(3)->0
+    s2 state_reg_q0 (
+        .D00(start_rnd),  // Next Q0 if IDLE
+        .D01(1'b0),       // Next Q0 if A
+        .D10(co_counter), // Next Q0 if B
+        .D11(1'b0),       // Next Q0 if C
+        .A1(q1), .B1(1'b0), // S1 = Q1
+        .A0(q0), .B0(1'b1), // S0 = Q0
+        .clr(rst), 
+        .clk(clk), 
+        .out(q0)
+    );
+
+    //-------------------------------------------------------------------------
+    // 3. Output Decoding
+    //    Using module 'c2' (Combinational MUX)
+    //-------------------------------------------------------------------------
+
+    // Decode State A (01) -> Generates load_shreg and inz_counter
+    // D01 is high, others low
+    wire is_state_A;
+    c2 decode_state_a (
+        .D00(1'b0), .D01(1'b1), .D10(1'b0), .D11(1'b0),
+        .A1(q1), .B1(1'b0), 
+        .A0(q0), .B0(1'b1), 
+        .out(is_state_A)
+    );
+    
+    // Decode State B (10) -> Generates shift_shreg and en_counter
+    // D10 is high, others low
+    wire is_state_B;
+    c2 decode_state_b (
+        .D00(1'b0), .D01(1'b0), .D10(1'b1), .D11(1'b0),
+        .A1(q1), .B1(1'b0), 
+        .A0(q0), .B0(1'b1), 
+        .out(is_state_B)
+    );
+
+    // Decode State C (11) -> Generates done_rnd
+    // D11 is high, others low
+    c2 decode_state_c (
+        .D00(1'b0), .D01(1'b0), .D10(1'b0), .D11(1'b1),
+        .A1(q1), .B1(1'b0), 
+        .A0(q0), .B0(1'b1), 
+        .out(done_rnd)
+    );
+
+    //-------------------------------------------------------------------------
+    // 4. Output Assignments
+    //-------------------------------------------------------------------------
+    assign load_shreg  = is_state_A;
+    assign inz_counter = is_state_A;
+    assign shift_shreg = is_state_B;
+    assign en_counter  = is_state_B;
+
 endmodule
