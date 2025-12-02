@@ -18,14 +18,12 @@ endmodule
 
 
 module logic_and3 (input a, input b, input c, output out);
-    wire t;
-    logic_and2 g1 (.a(a), .b(b), .out(t));
-    logic_and2 g2 (.a(t), .b(c), .out(out));
+    c2 c2_inst (.D00(0), .D01(0), .D10(0), .D11(1), 
+                .A1(c), .B1(c), .A0(a), .B0(b), .out(out));
 endmodule
 
 
 module logic_or2 (input a, input b, output out);
-
     c2 c2_or (
         .D00(1'b0), .D01(1'b1), .D10(1'b1), .D11(1'b1), 
         .A1(a), .B1(1'b0), .A0(b), .B0(1'b1), .out(out)
