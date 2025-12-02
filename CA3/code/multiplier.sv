@@ -14,11 +14,6 @@
 // number of gates:                                      520
 //------------------------------------------------------------
 
-module half_adder(input a, input b, output sum, output cout);
-    logic_xor2 lx1 (.a(a), .b(b), .out(sum));
-    logic_and2 la1 (.a(a), .b(b), .out(cout));
-endmodule
-
 module multiplier(
     input [7:0] f,
     output [7:0] multiplier_out
