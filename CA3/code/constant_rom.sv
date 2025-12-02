@@ -11,6 +11,6 @@ module constant_rom (
         $readmemh("../proj_desc/k.mem", rom);
     end
     
-    // assign data = rom[addr];
-    parallel_in_mux64 select(.sel(addr), .a(rom), .out(data));
+    assign data = rom[addr];
+    // parallel_in_mux64 select(.sel(addr), .a(rom), .out(data));
 endmodule
