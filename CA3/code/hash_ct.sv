@@ -96,9 +96,7 @@ module hash_ct(
     
     
     assign inz_counter_i = is_A;
-    
     assign en_counter_i = is_F;
-
     assign start_rnd = is_C;
 
     wire grp_af;
