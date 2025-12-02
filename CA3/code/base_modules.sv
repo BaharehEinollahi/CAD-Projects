@@ -29,6 +29,7 @@ module full_adder (input a, input b, input cin, output sum, output cout);
     logic_not not1(cin, cin_inv);
     //b ^ a ^ cin
     c1 c13(.A0(cin) , .A1(cin_inv) , .SA(a) , .B0(cin_inv) , .B1(cin) , .SB(a) , .S0(b) , .S1(b),.f(sum)) ;
+    //c1 c24(.A0(0) , .A1(cin) , .SA(b) , .B0(cin) , .B1(1) , .SB(b) , .S0(a) , .S1(a),.f(cout)) ;
     c2 c24(.D00(0), .D01(0), .D10(cin), .D11(1) , .A1(a) , .B1(b) , .A0(a) , .B0(b) , .out(cout));
 endmodule
 
