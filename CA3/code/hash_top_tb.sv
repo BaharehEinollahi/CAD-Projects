@@ -20,22 +20,22 @@ module hash_top_tb;
     always #5 clk = ~clk;
     
     initial begin
-        clk = 0;
-        rst = 1;
-        start = 0;
+        clk = 1'b0;
+        rst = 1'b1;
+        start = 1'b0;
         parallel_in_m = 32'h0;
         
         #20;
         
-        rst = 0;
+        rst = 1'b0;
         #20;
         
         parallel_in_m = 32'h f760dc3c;
         $display("Input data: %8h", parallel_in_m);
         
-        start = 1;
+        start = 1'b1;
         #10;
-        start = 0;
+        start = 1'b0;
 
         #8000;
         

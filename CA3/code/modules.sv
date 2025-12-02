@@ -18,19 +18,19 @@ module c2 (input D00 , D01 ,D10 , D11 , A1 , B1 , A0 , B0 , output reg out);
     assign s0 = A0 & B0 ;
     always @(*)
     begin
-      if (s1 == 1 && s0 == 1)
+      if (s1 == 1'b1 && s0 == 1'b1)
       begin
         out = D11;
       end
-      if (s1 == 1 && s0 == 0)
+      if (s1 == 1'b1 && s0 == 1'b0)
       begin
         out = D10;
       end
-      if (s1 == 0 && s0 == 1)
+      if (s1 == 1'b0 && s0 == 1'b1)
       begin
         out = D01;
       end
-      if (s1 == 0 && s0 == 0)
+      if (s1 == 1'b0 && s0 == 1'b0)
       begin
         out = D00;
       end
@@ -42,7 +42,7 @@ module FDCP(
 
   always @(posedge clk or posedge CLR)
     if(CLR)
-      Q <= 0;
+      Q <= 1'b0;
     else
       Q <= D;
 endmodule

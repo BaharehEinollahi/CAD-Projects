@@ -37,7 +37,7 @@ module parallel_in_mux4
     genvar i;
     generate
         for (i = 0; i < WIDTH; i = i + 1) begin : bit_slice_mux
-            c2 c24(.D00(a[i]), .D01(b[i]), .D10(c[i]), .D11(d[i]) , .A1(sel[1]) , .B1(sel[1]) , .A0(sel[0]) , .B0(sel[0]) , .out(out));
+            c2 c24(.D00(a[i]), .D01(b[i]), .D10(c[i]), .D11(d[i]) , .A1(sel[1]) , .B1(sel[1]) , .A0(sel[0]) , .B0(sel[0]) , .out(out[i]));
         end
     endgenerate
 endmodule
@@ -62,17 +62,36 @@ endmodule
 module parallel_in_mux64 
 #(parameter WIDTH = 8)
 (
-    input [3:0]sel,
+    input [5:0]sel,
     input  [WIDTH-1:0] a[0:63],
     output [WIDTH-1:0] out
 );
     wire [WIDTH-1:0] w1, w2, w3, w4;
-    parallel_in_mux4 m1(sel[1:0], a[0:15], w1);
-    parallel_in_mux4 m2(sel[1:0], a[16:31], w2);
-    parallel_in_mux4 m3(sel[1:0], a[32:47], w3);
-    parallel_in_mux4 m4(sel[1:0], a[48:63], w4);
+    wire [WIDTH-1:0] a_group1[0:15];
+    wire [WIDTH-1:0] a_group2[0:15];
+    wire [WIDTH-1:0] a_group3[0:15];
+    wire [WIDTH-1:0] a_group4[0:15];
+    
+    // Assign the slices element by element using generate blocks or a common for loop
+    genvar j;
+    generate
+        for (j = 0; j < 16; j = j + 1) begin : slice_assign
+            assign a_group1[j] = a[j];
+            assign a_group2[j] = a[j + 16];
+            assign a_group3[j] = a[j + 32];
+            assign a_group4[j] = a[j + 48];
+        end
+    endgenerate
+    parallel_in_mux16 m1(sel[3:0], a_group1, w1);
+    parallel_in_mux16 m2(sel[3:0], a_group2, w2);
+    parallel_in_mux16 m3(sel[3:0], a_group3, w3);
+    parallel_in_mux16 m4(sel[3:0], a_group4, w4);
+    // parallel_in_mux4 m1(sel[3:0], a[0:15], w1);
+    // parallel_in_mux4 m2(sel[3:0], a[16:31], w2);
+    // parallel_in_mux4 m3(sel[3:0], a[32:47], w3);
+    // parallel_in_mux4 m4(sel[3:0], a[48:63], w4);
 
-    parallel_in_mux4 m5(sel[3:2], w1, w2, w3, w4, out);
+    parallel_in_mux4 m5(sel[5:4], w1, w2, w3, w4, out);
     
 endmodule
 
@@ -81,7 +100,7 @@ module full_adder (input a, input b, input cin, output sum, output cout);
     logic_not not1(cin, cin_inv);
     //b ^ a ^ cin
     c1 c13(.A0(cin) , .A1(cin_inv) , .SA(a) , .B0(cin_inv) , .B1(cin) , .SB(a) , .S0(b) , .S1(b),.f(sum)) ;
-    c1 c24(.A0(0) , .A1(cin) , .SA(b) , .B0(cin) , .B1(1) , .SB(b) , .S0(a) , .S1(a),.f(cout)) ;
+    c1 c24(.A0(1'b0) , .A1(cin) , .SA(b) , .B0(cin) , .B1(1'b1) , .SB(b) , .S0(a) , .S1(a),.f(cout)) ;
     // c2 c24(.D00(0), .D01(0), .D10(cin), .D11(1) , .A1(a) , .B1(b) , .A0(a) , .B0(b) , .out(cout));
 endmodule
 
@@ -115,7 +134,7 @@ module adder
 );
     wire [WIDTH:0] c;
 
-    assign c[0] = 0;
+    assign c[0] = 1'b0;
 
     genvar i;
     generate
