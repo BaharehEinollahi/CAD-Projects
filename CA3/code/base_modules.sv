@@ -24,6 +24,58 @@ module parallel_in_mux
     endgenerate
 endmodule
 
+module parallel_in_mux4 
+#(parameter WIDTH = 8)
+(
+    input [1:0]sel,
+    input  [WIDTH-1:0] a,
+    input  [WIDTH-1:0] b,
+    input  [WIDTH-1:0] c,
+    input  [WIDTH-1:0] d,
+    output [WIDTH-1:0] out
+);
+    genvar i;
+    generate
+        for (i = 0; i < WIDTH; i = i + 1) begin : bit_slice_mux
+            c2 c24(.D00(a[i]), .D01(b[i]), .D10(c[i]), .D11(d[i]) , .A1(sel[1]) , .B1(sel[1]) , .A0(sel[0]) , .B0(sel[0]) , .out(out));
+        end
+    endgenerate
+endmodule
+
+module parallel_in_mux16 
+#(parameter WIDTH = 8)
+(
+    input [3:0]sel,
+    input  [WIDTH-1:0] a[0:15],
+    output [WIDTH-1:0] out
+);
+    wire [WIDTH-1:0] w1, w2, w3, w4;
+    parallel_in_mux4 m1(sel[1:0], a[0], a[1], a[2], a[3], w1);
+    parallel_in_mux4 m2(sel[1:0], a[4], a[5], a[6], a[7], w2);
+    parallel_in_mux4 m3(sel[1:0], a[8], a[9], a[10], a[11], w3);
+    parallel_in_mux4 m4(sel[1:0], a[12], a[13], a[14], a[15], w4);
+
+    parallel_in_mux4 m5(sel[3:2], w1, w2, w3, w4, out);
+    
+endmodule
+
+module parallel_in_mux64 
+#(parameter WIDTH = 8)
+(
+    input [3:0]sel,
+    input  [WIDTH-1:0] a[0:63],
+    output [WIDTH-1:0] out
+);
+    wire [WIDTH-1:0] w1, w2, w3, w4;
+    parallel_in_mux4 m1(sel[1:0], a[0:15], w1);
+    parallel_in_mux4 m2(sel[1:0], a[16:31], w2);
+    parallel_in_mux4 m3(sel[1:0], a[32:47], w3);
+    parallel_in_mux4 m4(sel[1:0], a[48:63], w4);
+
+    parallel_in_mux4 m5(sel[3:2], w1, w2, w3, w4, out);
+    
+endmodule
+
 module full_adder (input a, input b, input cin, output sum, output cout);
     wire cin_inv;
     logic_not not1(cin, cin_inv);

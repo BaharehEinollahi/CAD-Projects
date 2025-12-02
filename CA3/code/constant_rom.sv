@@ -12,9 +12,6 @@ module constant_rom (
     end
     
     assign data = rom[addr];
-    module parallel_in_mux 
-#(parameter WIDTH = 8)
-(sel_1, [WIDTH-1:0] a,sel_2, [WIDTH-1:0] b, [WIDTH-1:0] otherwise, [WIDTH-1:0] out
-);
+    parallel_in_mux p1(addr[0], a,sel_2, b, otherwise, out);
     
 endmodule
