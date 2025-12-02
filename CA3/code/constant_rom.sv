@@ -12,5 +12,4 @@ module constant_rom (
     end
     
     assign data = rom[addr];
-    // parallel_in_mux64 select(.sel(addr), .a(rom), .out(data));
 endmodule

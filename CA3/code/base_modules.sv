@@ -72,7 +72,6 @@ module parallel_in_mux64
     wire [WIDTH-1:0] a_group3[0:15];
     wire [WIDTH-1:0] a_group4[0:15];
     
-    // Assign the slices element by element using generate blocks or a common for loop
     genvar j;
     generate
         for (j = 0; j < 16; j = j + 1) begin : slice_assign
@@ -86,11 +85,6 @@ module parallel_in_mux64
     parallel_in_mux16 m2(sel[3:0], a_group2, w2);
     parallel_in_mux16 m3(sel[3:0], a_group3, w3);
     parallel_in_mux16 m4(sel[3:0], a_group4, w4);
-    // parallel_in_mux4 m1(sel[3:0], a[0:15], w1);
-    // parallel_in_mux4 m2(sel[3:0], a[16:31], w2);
-    // parallel_in_mux4 m3(sel[3:0], a[32:47], w3);
-    // parallel_in_mux4 m4(sel[3:0], a[48:63], w4);
-
     parallel_in_mux4 m5(sel[5:4], w1, w2, w3, w4, out);
     
 endmodule
@@ -101,7 +95,6 @@ module full_adder (input a, input b, input cin, output sum, output cout);
     //b ^ a ^ cin
     c1 c13(.A0(cin) , .A1(cin_inv) , .SA(a) , .B0(cin_inv) , .B1(cin) , .SB(a) , .S0(b) , .S1(b),.f(sum)) ;
     c1 c24(.A0(1'b0) , .A1(cin) , .SA(b) , .B0(cin) , .B1(1'b1) , .SB(b) , .S0(a) , .S1(a),.f(cout)) ;
-    // c2 c24(.D00(0), .D01(0), .D10(cin), .D11(1) , .A1(a) , .B1(b) , .A0(a) , .B0(b) , .out(cout));
 endmodule
 
 module half_adder(input a, input b, output sum, output cout);
