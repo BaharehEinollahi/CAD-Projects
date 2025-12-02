@@ -24,7 +24,7 @@ module parallel_in_mux
     endgenerate
 endmodule
 
-module logic_full_adder 
+module full_adder 
 (
     input a,
     input b,
@@ -32,16 +32,12 @@ module logic_full_adder
     output sum,
     output cout
 );
-    wire wire_axorb;
-    wire wire_and_ab;
-    wire wire_and_axorb_cin;
+    wire cin_inv;
+    logic_not not1(cin, cin_inv);
+    //b ^ a ^ cin
+    c1 c13(.A0(cin) , .A1(cin_inv) , .SA(a) , .B0(cin_inv) , .B1(cin) , .SB(a) , .S0(b) , .S1(b),.f(sum)) ;
+    c2 c24(.D00(0), .D01(0), .D10(cin), .D11(1) , .A1(a) , .B1(b) , .A0(a) , .B0(b) , .out(cout));
 
-    logic_xor2 gate_xor1 (.a(a), .b(b), .out(wire_axorb));
-    logic_xor2 gate_xor2 (.a(wire_axorb), .b(cin), .out(sum));
-
-    logic_and2 gate_and1 (.a(a), .b(b), .out(wire_and_ab));
-    logic_and2 gate_and2 (.a(wire_axorb), .b(cin), .out(wire_and_axorb_cin));
-    logic_or2  gate_or1  (.a(wire_and_ab), .b(wire_and_axorb_cin), .out(cout));
 
 endmodule
 
@@ -60,7 +56,7 @@ module adder
     genvar i;
     generate
         for (i = 0; i < 8; i = i + 1) begin : adder_slice
-            logic_full_adder fa (
+            full_adder fa (
                 .a(a[i]),
                 .b(b[i]),
                 .cin(c[i]),
