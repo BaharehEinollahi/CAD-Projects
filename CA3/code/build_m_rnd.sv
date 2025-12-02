@@ -6,17 +6,19 @@ module build_m_rnd (
 genvar k;
 generate
     for (k = 0; k < 8; k = k + 1) begin : mux_gen
-        c2 c2_inst (
-            .D00(out_m[31-k]), 
-            .D01(out_m[23-k]), 
-            .D10(out_m[15-k]), 
-            .D11(out_m[7-k]), 
-            .A1(rnd_out[1]), 
-            .B1(1'b0),   
-            .A0(rnd_out[0]), 
-            .B0(1'b1),    
-            .out(m_rnd_[7-k])
-        );
+        // c2 c2_inst (
+        //     .D00(out_m[31-k]), 
+        //     .D01(out_m[23-k]), 
+        //     .D10(out_m[15-k]), 
+        //     .D11(out_m[7-k]), 
+        //     .A1(rnd_out[1]), 
+        //     .B1(1'b0),   
+        //     .A0(rnd_out[0]), 
+        //     .B0(1'b1),    
+        //     .out(m_rnd_[7-k])
+        // );
+        c1 c13(.A0(out_m[31-k]) , .A1(out_m[23-k]) , .SA(rnd_out[0]) , .B0(out_m[15-k]) , .B1(out_m[7-k]) , .SB(rnd_out[0]) , .S0(rnd_out[1]) , .S1(rnd_out[1]),.f(out)) ;
+
     end
 endgenerate
 

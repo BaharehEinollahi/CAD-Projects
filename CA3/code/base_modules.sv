@@ -42,44 +42,15 @@ module half_adder_no_cout(input a, input b, output sum);
 endmodule
 
 
-module full_adder (input a, input b, input cin, output sum, output cout);
-    wire cin_inv;
-    // Inverter uses 1x c2
-    logic_not not1(cin, cin_inv);
-    
-    // Sum = a ^ b ^ cin. Uses 1x c1 (requires cin and cin_inv)
-    c1 c1_sum(
-        .A0(cin) , .A1(cin_inv) , .SA(a), 
-        .B0(cin_inv) , .B1(cin) , .SB(a), 
-        .S0(b) , .S1(b),
-        .f(sum)
-    );
-    
-    // Cout = Majority(a,b,cin). Uses 1x c2
-    c2 c2_cout(
-        .D00(1'b0), .D01(1'b0), .D10(cin), .D11(1'b1), 
-        .A1(a) , .B1(b) , .A0(a) , .B0(b) , 
-        .out(cout)
-    );
-endmodule
-
 module half_adder(input a, input b, output sum, output cout);
     logic_xor2 lx1 (.a(a), .b(b), .out(sum));
     logic_and2 la1 (.a(a), .b(b), .out(cout));
 endmodule
 
-// This module takes 3 inputs (A, B, Cin) but only generates Sum. 
-// It is used for the MSB where Cout is not needed.
 module full_adder_no_cout(input a, input b, input cin, output sum);
     wire cin_inv;
     logic_not not1(cin, cin_inv);
-    
-    c1 c1_sum(
-        .A0(cin) , .A1(cin_inv) , .SA(a), 
-        .B0(cin_inv) , .B1(cin) , .SB(a), 
-        .S0(b) , .S1(b),
-        .f(sum)
-    );
+    c1 c1_sum(.A0(cin) , .A1(cin_inv) , .SA(a), .B0(cin_inv) , .B1(cin) , .SB(a), .S0(b) , .S1(b),.f(sum));
 endmodule
 
 module adder 

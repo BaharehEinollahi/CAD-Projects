@@ -20,7 +20,6 @@ module build_f1(
     //c ^ (b | ~d)
     c2 c24(.D00(0), .D01(1), .D10(1), .D11(0) , .A1(b) , .B1(d_inv) , .A0(c) , .B0(c) , .out(res[3]));
 
-
     c2 c25(.D00(out_res0_res1), .D01(out_res0_res1), .D10(res[2]), .D11(res[3]) , .A1(sel[1]) , .B1(sel[1]) , .A0(sel[0]) , .B0(sel[0]) , .out(out));
 
 endmodule
