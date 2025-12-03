@@ -7,39 +7,35 @@ module hash_ct(
     input co_counter_i,
     input done_rnd,
 
-    output logic inz_counter_i,
-    output logic en_counter_i,
-    output logic start_rnd,
-    output logic load_m,
+    output inz_counter_i,
+    output en_counter_i,
+    output start_rnd,
+    output load_m,
     
-    output logic load_a,
-    output logic load_b,
-    output logic load_c,
-    output logic load_d,
+    output load_a,
+    output load_b,
+    output load_c,
+    output load_d,
 
-    output logic sel_a1,
-    output logic sel_b1,
-    output logic sel_c1,
-    output logic sel_d1,
+    output sel_a1,
+    output sel_b1,
+    output sel_c1,
+    output sel_d1,
     
-    output logic sel_a2,
-    output logic sel_b2,
-    output logic sel_c2,
-    output logic sel_d2,
+    output sel_a2,
+    output sel_b2,
+    output sel_c2,
+    output sel_d2,
 
-    output logic load_f,
-    output logic sel_f1,
-    output logic sel_f2,
+    output load_f,
+    output sel_f1,
+    output sel_f2,
 
-    output logic done
+    output done
 );
 
-    wire qa, qb, qc, qd, qe, qf, qg, q_nidle;
+    wire qa, qb, qc, qd, qe, qf, qg, q_idle;
     wire w_load_common, w_load_f;
-    wire w_vcc, w_gnd;
-
-    assign w_vcc = 1'b1;
-    assign w_gnd = 1'b0;
 
     assign inz_counter_i = qa;
     assign sel_a1 = qa;
@@ -66,56 +62,56 @@ module hash_ct(
     assign load_f = w_load_f;
     assign done = qg;
 
-    s2 r_nidle (
+    s2 r_idle (
         .D00(start),
         .D01(start),
-        .D10(w_vcc),
-        .D11(w_gnd),
-        .A1(q_nidle),
-        .B1(w_gnd),
+        .D10(1'b1),
+        .D11(1'b0),
+        .A1(q_idle),
+        .B1(1'b0),
         .A0(qg),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
-        .out(q_nidle)
+        .out(q_idle)
     );
 
     s2 r_a (
-        .D00(w_gnd),
-        .D01(w_vcc),
-        .D10(w_gnd),
-        .D11(w_gnd),
-        .A1(q_nidle),
-        .B1(w_gnd),
+        .D00(1'b0),
+        .D01(1'b1),
+        .D10(1'b0),
+        .D11(1'b0),
+        .A1(q_idle),
+        .B1(1'b0),
         .A0(start),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
         .out(qa)
     );
 
     s1 r_b (
-        .D00(w_gnd),
-        .D01(w_gnd),
-        .D10(w_vcc),
-        .D11(w_vcc),
+        .D00(1'b0),
+        .D01(1'b0),
+        .D10(1'b1),
+        .D11(1'b1),
         .A1(qa),
         .B1(qf),
-        .A0(w_gnd),
+        .A0(1'b0),
         .clr(rst),
         .clk(clk),
         .out(qb)
     );
 
     s2 r_c (
-        .D00(w_gnd),
-        .D01(w_gnd),
-        .D10(w_vcc),
-        .D11(w_gnd),
+        .D00(1'b0),
+        .D01(1'b0),
+        .D10(1'b1),
+        .D11(1'b0),
         .A1(qb),
-        .B1(w_gnd),
+        .B1(1'b0),
         .A0(co_counter_i),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
         .out(qc)
@@ -124,80 +120,59 @@ module hash_ct(
     s2 r_d (
         .D00(qc),
         .D01(qc),
-        .D10(w_vcc),
-        .D11(w_gnd),
+        .D10(1'b1),
+        .D11(1'b0),
         .A1(qd),
-        .B1(w_gnd),
+        .B1(1'b0),
         .A0(done_rnd),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
         .out(qd)
     );
 
     s2 r_e (
-        .D00(w_gnd),
-        .D01(w_gnd),
-        .D10(w_gnd),
-        .D11(w_vcc),
+        .D00(1'b0),
+        .D01(1'b0),
+        .D10(1'b0),
+        .D11(1'b1),
         .A1(qd),
-        .B1(w_gnd),
+        .B1(1'b0),
         .A0(done_rnd),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
         .out(qe)
     );
 
     s1 r_f (
-        .D00(w_gnd),
-        .D01(w_gnd),
-        .D10(w_vcc),
-        .D11(w_vcc),
+        .D00(1'b0),
+        .D01(1'b0),
+        .D10(1'b1),
+        .D11(1'b1),
         .A1(qe),
-        .B1(w_gnd),
-        .A0(w_gnd),
+        .B1(1'b0),
+        .A0(1'b0),
         .clr(rst),
         .clk(clk),
         .out(qf)
     );
 
     s2 r_g (
-        .D00(w_gnd),
-        .D01(w_gnd),
-        .D10(w_gnd),
-        .D11(w_vcc),
+        .D00(1'b0),
+        .D01(1'b0),
+        .D10(1'b0),
+        .D11(1'b1),
         .A1(qb),
-        .B1(w_gnd),
+        .B1(1'b0),
         .A0(co_counter_i),
-        .B0(w_vcc),
+        .B0(1'b1),
         .clr(rst),
         .clk(clk),
         .out(qg)
     );
 
-    c1 or_common (
-        .A0(qa),
-        .A1(w_gnd),
-        .SA(w_gnd),
-        .B0(w_vcc),
-        .B1(w_gnd),
-        .SB(w_gnd),
-        .S0(qa),
-        .S1(qf),
-        .f(w_load_common)
-    );
-
-    c1 or_load_f (
-        .A0(qc),
-        .A1(w_gnd),
-        .SA(w_gnd),
-        .B0(w_vcc),
-        .B1(w_gnd),
-        .SB(w_gnd),
-        .S0(qc),
-        .S1(qe),
-        .f(w_load_f)
-    );
+    logic_or2 or_common (qa, qf, w_load_common);
+    logic_or2 or_load_f (qc, qe, w_load_f);
 
 endmodule
