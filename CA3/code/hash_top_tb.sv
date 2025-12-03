@@ -34,10 +34,10 @@ module hash_top_tb;
         $display("Input data: %8h", parallel_in_m);
         
         start = 1'b1;
-        #10;
+        #60;
         start = 1'b0;
 
-        #8000;
+        #7700;
         
         $stop;
     end

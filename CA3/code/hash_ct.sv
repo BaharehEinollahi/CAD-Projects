@@ -62,115 +62,14 @@ module hash_ct(
     assign load_f = w_load_f;
     assign done = qg;
 
-    s2 r_idle (
-        .D00(start),
-        .D01(start),
-        .D10(1'b1),
-        .D11(1'b0),
-        .A1(q_idle),
-        .B1(1'b0),
-        .A0(qg),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(q_idle)
-    );
-
-    s2 r_a (
-        .D00(1'b0),
-        .D01(1'b1),
-        .D10(1'b0),
-        .D11(1'b0),
-        .A1(q_idle),
-        .B1(1'b0),
-        .A0(start),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(qa)
-    );
-
-    s1 r_b (
-        .D00(1'b0),
-        .D01(1'b0),
-        .D10(1'b1),
-        .D11(1'b1),
-        .A1(qa),
-        .B1(qf),
-        .A0(1'b0),
-        .clr(rst),
-        .clk(clk),
-        .out(qb)
-    );
-
-    s2 r_c (
-        .D00(1'b0),
-        .D01(1'b0),
-        .D10(1'b1),
-        .D11(1'b0),
-        .A1(qb),
-        .B1(1'b0),
-        .A0(co_counter_i),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(qc)
-    );
-
-    s2 r_d (
-        .D00(qc),
-        .D01(qc),
-        .D10(1'b1),
-        .D11(1'b0),
-        .A1(qd),
-        .B1(1'b0),
-        .A0(done_rnd),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(qd)
-    );
-
-    s2 r_e (
-        .D00(1'b0),
-        .D01(1'b0),
-        .D10(1'b0),
-        .D11(1'b1),
-        .A1(qd),
-        .B1(1'b0),
-        .A0(done_rnd),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(qe)
-    );
-
-    s1 r_f (
-        .D00(1'b0),
-        .D01(1'b0),
-        .D10(1'b1),
-        .D11(1'b1),
-        .A1(qe),
-        .B1(1'b0),
-        .A0(1'b0),
-        .clr(rst),
-        .clk(clk),
-        .out(qf)
-    );
-
-    s2 r_g (
-        .D00(1'b0),
-        .D01(1'b0),
-        .D10(1'b0),
-        .D11(1'b1),
-        .A1(qb),
-        .B1(1'b0),
-        .A0(co_counter_i),
-        .B0(1'b1),
-        .clr(rst),
-        .clk(clk),
-        .out(qg)
-    );
+    s2 r_idle ( .D00(qg), .D01(start), .D10(1'b1), .D11(1'b0), .A1(q_idle), .B1(1'b0), .A0(start), .B0(1'b1), .clr(rst), .clk(clk), .out(q_idle));
+    s2 r_a ( .D00(1'b0), .D01(q_idle), .D10(1'b0), .D11(1'b1), .A1(qa), .B1(1'b0), .A0(start), .B0(1'b1), .clr(rst), .clk(clk), .out(qa));
+    s2 r_b ( .D00(qf), .D01(qf), .D10(1'b1), .D11(1'b0), .A1(qa), .B1(1'b0), .A0(start), .B0(1'b1), .clr(rst), .clk(clk), .out(qb));
+    s2 r_c ( .D00(1'b0), .D01(1'b0), .D10(1'b1), .D11(1'b0), .A1(qb), .B1(1'b0), .A0(co_counter_i), .B0(1'b1), .clr(rst), .clk(clk), .out(qc));
+    s2 r_d ( .D00(qc), .D01(qc), .D10(1'b1), .D11(1'b0), .A1(qd), .B1(1'b0), .A0(done_rnd), .B0(1'b1), .clr(rst), .clk(clk), .out(qd));
+    s2 r_e ( .D00(1'b0), .D01(1'b0), .D10(1'b0), .D11(1'b1), .A1(qd), .B1(1'b0), .A0(done_rnd), .B0(1'b1), .clr(rst), .clk(clk), .out(qe));
+    s1 r_f ( .D00(1'b0), .D01(1'b0), .D10(1'b1), .D11(1'b1), .A1(qe), .B1(1'b0), .A0(1'b0), .clr(rst), .clk(clk), .out(qf));
+    s2 r_g ( .D00(1'b0), .D01(1'b0), .D10(1'b0), .D11(1'b1), .A1(qb), .B1(1'b0), .A0(co_counter_i), .B0(1'b1), .clr(rst), .clk(clk), .out(qg));
 
     logic_or2 or_common (qa, qf, w_load_common);
     logic_or2 or_load_f (qc, qe, w_load_f);
