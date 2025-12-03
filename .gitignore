@@ -17,3 +17,4 @@ CA2/work/_vmake
 **/tmp_*
 **/transcript
 **/vsim.wlf
+**/*.rar
