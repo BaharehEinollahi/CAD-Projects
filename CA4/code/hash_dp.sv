@@ -36,13 +36,13 @@ module hash_dp
 );
 
 	wire [5:0] out_counter_i;
-	counter #(.WIDTH(6)) counter_i (
+	counter2 #(.WIDTH(6)) counter_i (
 		.clk(clk),
 		.rst(rst),
 		.inz(inz_counter_i),
 		.en(en_counter_i),
 		.inz_value(0),
-		.cout2(co_counter_i),
+		.cout(co_counter_i),
 		.out(out_counter_i)
 	);
 	wire [1:0] rnd_out;
@@ -75,13 +75,11 @@ module hash_dp
 	assign d0 = 8'h76;
 
 	wire [7:0] multiplier_out;
-	wire [7:0] sum_b_multi;
-	adder adder(out_b, multiplier_out, sum_b_multi);
-	parallel_in_mux parallel_in_mux1(.sel_1(sel_a1), .a(a0), .sel_2(sel_a2), .b(out_d), .otherwise(8'b0), .out(parallel_in_a));
-	parallel_in_mux parallel_in_mux2(.sel_1(sel_b1), .a(b0), .sel_2(sel_b2), .b(sum_b_multi), .otherwise(8'b0), .out(parallel_in_b));
-	parallel_in_mux parallel_in_mux3(.sel_1(sel_c1), .a(c0), .sel_2(sel_c2), .b(out_b), .otherwise(8'b0), .out(parallel_in_c));
-	parallel_in_mux parallel_in_mux4(.sel_1(sel_d1), .a(d0), .sel_2(sel_d2), .b(out_c), .otherwise(8'b0), .out(parallel_in_d));
-	
+
+	assign parallel_in_a = (sel_a1) ? a0 : (sel_a2)? out_d : 0;
+	assign parallel_in_b = (sel_b1) ? b0 : (sel_b2)? out_b + multiplier_out : 0;
+	assign parallel_in_c = (sel_c1) ? c0 : (sel_c2)? out_b : 0;
+	assign parallel_in_d = (sel_d1) ? d0 : (sel_d2)? out_c : 0;
 	register #(8) reg_a (
 		.clk(clk),
 		.rst(rst),
@@ -116,7 +114,10 @@ module hash_dp
 
 	wire [7:0] input_f1, input_f2, parallel_in_f;
 	wire [7:0] out_f;
-	parallel_build_f1 bpf1(.a(out_a),.b(out_b),.c(out_c),.d(out_d),.sel(out_counter_i[5:4]),.out(input_f1));
+	assign input_f1 =  (out_counter_i[5:4] == 2'b00) ? ((out_b & out_c) | ((~out_b) & out_d)) :
+							(out_counter_i[5:4] == 2'b01) ? ((out_d & out_b) | ((~out_d) & out_c)) :
+							(out_counter_i[5:4] == 2'b10) ? (out_b ^ out_c ^ out_d ) :
+							                                (out_c ^ (out_b | (~out_d)));
 
 	register #(8) reg_f (
 		.clk(clk),
@@ -136,23 +137,31 @@ module hash_dp
 	);
 
 	wire [7:0] m_rnd_;
-	build_m_rnd bmrnd(.out_m(out_m), .rnd_out(rnd_out), .m_rnd_(m_rnd_));
+
+	assign m_rnd_ =       (rnd_out == 2'b11) ? out_m[7:0]   :
+                          (rnd_out == 2'b10) ? out_m[15:8]  :
+                          (rnd_out == 2'b01) ? out_m[23:16]  :
+                          (rnd_out == 2'b00) ? out_m[31:24] :
+                          8'b0;
+	
+	wire [4:0] step_i_;
+
 	wire [7:0] constant_rom_out;
 	constant_rom constant_rom(
 		.addr(out_counter_i),
 		.data(constant_rom_out)
 	);
 
-
+	
 	multiplier multiplier(
 		out_f,
 		multiplier_out
 	);
-	wire [7:0] sum1, sum2;
-	adder adder2(constant_rom_out, out_f, sum1);
-	adder adder3(m_rnd_, out_a, sum2);
-	adder adder4(sum1, sum2, input_f2);
-	parallel_in_mux parallel_in_mux5(.sel_1(sel_f1), .a(input_f1), .sel_2(sel_f2), .b(input_f2), .otherwise(8'b0), .out(parallel_in_f));
+	
+
+	assign input_f2 = (constant_rom_out + out_f) + (m_rnd_ + out_a);
+	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   
+
 
 	assign out = {out_a, out_b, out_c, out_d};
 	
