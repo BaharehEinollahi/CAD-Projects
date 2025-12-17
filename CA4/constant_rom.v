@@ -2,15 +2,13 @@
 
 module constant_rom (
     input [5:0] addr,
-    output logic [7:0] data
+    output [7:0] data
 );
-    
-    logic [7:0] rom [0:63];
-    
+    reg [7:0] rom [0:63];
     initial begin
-        $readmemh("constant.mem", rom);
+        $readmemh("k.mem", rom);
     end
     
     assign data = rom[addr];
-    
+
 endmodule

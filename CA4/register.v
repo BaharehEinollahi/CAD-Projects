@@ -7,7 +7,7 @@ module register
 	input rst,
 	input load,
 	input [WIDTH-1:0] parallel_in,
-	output logic [WIDTH-1:0] data_out
+	output reg [WIDTH-1:0] data_out
 );
 
 	always @(posedge clk, posedge rst) begin

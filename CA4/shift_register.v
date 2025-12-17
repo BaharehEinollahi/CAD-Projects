@@ -8,7 +8,7 @@ module shift_register
 	input shift,
 	input input_bit,
 	input [5:0] parallel_in,
-	output logic [5:0] data_out
+	output reg [5:0] data_out
 );
 
 	always @(posedge clk, posedge rst) begin

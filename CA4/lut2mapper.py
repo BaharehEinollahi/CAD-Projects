@@ -195,7 +195,7 @@ def map_lut1_to_cell(lut, cell_type, widths) -> Optional[str]:
     if cell_type == "c2":
         return (f"c2 {lut['name']} (\n"
             f"    .D00(1'b{bit0}), .D01(1'b{bit1}), .D10(1'b{0}), .D11(1'b{0}),\n"
-            f"    .A1({0}), .B1({0}), .A0({a}), .B0({a}),\n"  
+            f"    .A1(1\'b{0}), .B1(1\'b{0}), .A0({a}), .B0({a}),\n"  
             f"    .out({lut['output']})\n"
             f");")
     
@@ -211,7 +211,7 @@ def map_lut1_to_cell(lut, cell_type, widths) -> Optional[str]:
     return (f"c1 {lut['name']} (\n"
             f"    .A0(1'b{bit0}), .A1(1'b{bit1}), .SA(1'b{a}),\n"
             f"    .B0(1'b{0}), .B1(1'b{0}), .SB(1'b{0}),\n"
-            f"    .S0({0}), .S1({0}), .f({lut['output']})\n"
+            f"    .S0(1\'b{0}), .S1(1\'b{0}), .f({lut['output']})\n"
             f");")
 
 # ---------- FF mapping ----------
@@ -220,8 +220,8 @@ _PORT_RE = re.compile(r"\.(\w+)\(\s*([^)]+?)\s*\)")
 def _ports_dict(port_block: str) -> Dict[str,str]:
     return {k: v.strip() for k, v in _PORT_RE.findall(port_block)}
 
-_SDFFE_RE = re.compile(r"""\\?\$_SDFFE_PP0P_\s*([^\s(]+)\s*\(\s*(.*?)\s*\)\s*;""", re.DOTALL)
-_DFF_RE   = re.compile(r"""\\?\$_DFF_P_\s*([^\s(]+)\s*\(\s*(.*?)\s*\)\s*;""", re.DOTALL)
+_SDFFE_RE = re.compile(r"""\\?\$_DFFE_PP0P_\s*([^\s(]+)\s*\(\s*(.*?)\s*\)\s*;""", re.DOTALL)
+_DFF_RE   = re.compile(r"""\\?\$_DFF_PP0_\s*([^\s(]+)\s*\(\s*(.*?)\s*\)\s*;""", re.DOTALL)
 
 
 def map_sdffe_to_s2(inst_name: str, ports: Dict[str,str]) -> str:
@@ -246,7 +246,7 @@ def map_sdffe_to_s2(inst_name: str, ports: Dict[str,str]) -> str:
     #         +----------------------+
     # D ----->|                      |
     # C ----->|                      |-----> Q
-    # E ----->|   $_SDFFE_PP0P_      |
+    # E ----->|    $_DFFE_PP0P_      |
     # R ----->|   (CE + reset)       |
     #         +----------------------+
 
@@ -259,14 +259,14 @@ def map_sdffe_to_s2(inst_name: str, ports: Dict[str,str]) -> str:
     # TODO: complete inside each {} with the right arguments (C, D, E, R, Q) or const 1'b0, 1'b1
     return (
         f"s2 {inst_name} (\n"
-        f"    .D00({D}), .D01({Q}), .D10({0}), .D11({0}),\n"  
-        f"    .A1({0}), .B1({0}), .A0({E}), .B0({E}),\n"      
+        f"    .D00({Q}), .D01({D}), .D10(1\'b{0}), .D11(1\'b{0}),\n"  
+        f"    .A1(1\'b{0}), .B1(1\'b{0}), .A0({E}), .B0({E}),\n"      
         f"    .clr({R}), .clk({C}), .out({Q})\n"             
         f");"
     )
 
 def map_dff_to_s1(inst: str, ports: Dict[str,str]) -> str:
-    C = ports.get('C'); D = ports.get('D'); Q = ports.get('Q')
+    C = ports.get('C'); D = ports.get('D'); Q = ports.get('Q'); R = ports.get('R');
 
     #         +----------------------+
     # D ----->|                      |-----> Q
@@ -280,9 +280,9 @@ def map_dff_to_s1(inst: str, ports: Dict[str,str]) -> str:
     # TODO: complete inside each {} with the right arguments (C, D, Q) or const bits 1'b0, 1'b1
     return (
         f"s1 {inst} (\n"
-        f"    .D00({D}), .D01({0}), .D10({0}), .D11({0}),\n"
-        f"    .A1({0}), .B1({0}), .A0({0}),\n"
-        f"    .clr({0}), .clk({C}), .out({Q})\n"
+        f"    .D00({D}), .D01(1\'b{0}), .D10(1\'b{0}), .D11(1\'b{0}),\n"
+        f"    .A1(1\'b{0}), .B1(1\'b{0}), .A0(1\'b{0}),\n"
+        f"    .clr({R}), .clk({C}), .out({Q})\n"
         f");"
     )
 
@@ -515,8 +515,8 @@ def main():
     
     before = new
     new, mapped_s1, mapped_s2 = map_flipflops(new, mapped_s1, mapped_s2)
-    ff_mapped = (before.count("$_SDFFE_PP0P_") - new.count("$_SDFFE_PP0P_")) + \
-                (before.count("$_DFF_P_") - new.count("$_DFF_P_"))
+    ff_mapped = (before.count("$_DFFE_PP0P_") - new.count("$_DFFE_PP0P_")) + \
+                (before.count("$_DFF_P0_") - new.count("$_DFF_P0_"))
     
 
     print(f"Total number of {args.cell}: {mapped}")

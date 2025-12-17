@@ -137,14 +137,12 @@ module hash_dp
 	);
 
 	wire [7:0] m_rnd_;
-
 	assign m_rnd_ =       (rnd_out == 2'b11) ? out_m[7:0]   :
                           (rnd_out == 2'b10) ? out_m[15:8]  :
                           (rnd_out == 2'b01) ? out_m[23:16]  :
                           (rnd_out == 2'b00) ? out_m[31:24] :
-                          8'b0;
+                          32'b0;
 	
-	wire [4:0] step_i_;
 
 	wire [7:0] constant_rom_out;
 	constant_rom constant_rom(
@@ -152,12 +150,11 @@ module hash_dp
 		.data(constant_rom_out)
 	);
 
-	
+
 	multiplier multiplier(
 		out_f,
 		multiplier_out
 	);
-	
 
 	assign input_f2 = (constant_rom_out + out_f) + (m_rnd_ + out_a);
 	assign parallel_in_f = (sel_f1) ?  input_f1 : (sel_f2) ? input_f2 : 0;   

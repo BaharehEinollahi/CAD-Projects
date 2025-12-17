@@ -5,12 +5,12 @@ module rnd_generator_ct
 	input clk,
 	input rst,
 	input start_rnd,
-	output logic shift_shreg,
-	output logic load_shreg,
-	output logic done_rnd
+	output reg shift_shreg,
+	output reg load_shreg,
+	output reg done_rnd
 );
-	logic inz_counter;
-	logic en_counter;
+	reg inz_counter;
+	reg en_counter;
 	wire co_counter;
 	counter counter(
 		.clk(clk),
@@ -20,9 +20,9 @@ module rnd_generator_ct
 		.inz_value(3'b010),
 		.cout(co_counter)
 	);
-	
-	typedef enum logic [1:0] {IDLE, A, B, C} state_t;
-    state_t ps, ns;
+
+	parameter IDLE = 2'b00, A = 2'b01, B = 2'b10, C = 2'b11;
+    reg [2:0] ps, ns;
 	always@(posedge clk, posedge rst) begin
 		if(rst) begin
 			ps <= IDLE;
@@ -30,7 +30,7 @@ module rnd_generator_ct
 			ps <= ns;
 		end
 	end
-	
+
 	always@(*) begin
 		case(ps)
 			IDLE: begin
@@ -52,7 +52,7 @@ module rnd_generator_ct
 			default: ns = IDLE;
 		endcase
 	end
-	
+
 	always@(*) begin
 		load_shreg = 0;
 		shift_shreg = 0;
@@ -77,6 +77,5 @@ module rnd_generator_ct
 			end
 		endcase
 	end
-	
-	
+
 endmodule
